@@ -1,0 +1,20 @@
+=== Relatório de Viagem ===
+Terreno: Floresta
+Dias: 15
+Período: noite
+
+Dia 1: Sem encontros
+Dia 2: Sem encontros
+Dia 3: Sem encontros
+Dia 4: Anomalia: Algo brilha à distância, mas é apenas um reflexo (Durante um descanso curto ou longo)
+Dia 5: Criaturas: Criatura indefinida (De noite)
+Dia 6: Criaturas: Criatura indefinida (Anoitecer)
+Dia 7: Sem encontros
+Dia 8: Obstáculo + Criaturas: O grupo encontra um campo de cogumelos que liberam esporos alucinógenos. Teste de resistência de Constituição CD 15 ou sofre desorientação por 1d6 horas. e Criatura indefinida (Meio-dia)
+Dia 9: Criaturas: Criatura indefinida (De noite)
+Dia 10: Obstáculo temporário: O grupo entra em um território de formigas gigantes (não agressivas, mas numerosas). Avançar sem pisar nelas exige testes de Acrobacia CD 14. (Anoitecer)
+Dia 11: Criaturas: Criatura indefinida (Ao amanhecer)
+Dia 12: Evento especial: 7 guerreiros tribais usando máscaras de animais vagam lentamente pela floresta para caçar ou cumprir algum ritual de sua tribo (De manhã)
+Dia 13: Criaturas: Criatura indefinida (Meio-dia)
+Dia 14: Obstáculo + Criaturas: A floresta parece imitar sons do grupo, confundindo sua percepção. Teste de Percepção CD 16 para seguir na direção correta. e Criatura indefinida (De tarde)
+Dia 15: Criaturas: Criatura indefinida (De noite)

@@ -1,9 +1,9 @@
 {
-    "1-4": "Se escondendo ou foragidos",
-    "5-9": "Lutando contra bestas",
-    "10": "Fugindo apavorados",
-    "11-13": "Presos em uma anomalia",
-    "14": "Acampando ou descansando",
-    "15-19": "Executando um ritual",
-    "20": "Perdidos pedindo ajuda"
+    "Se escondendo ou foragidos": 1,
+    "Lutando contra bestas": 1,
+    "Fugindo apavorados": 1,
+    "Presos em uma anomalia": 1,
+    "Acampando ou descansando": 1,
+    "Executando um ritual": 1,
+    "Perdidos pedindo ajuda": 1
 }

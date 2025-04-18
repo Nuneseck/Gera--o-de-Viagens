@@ -16,13 +16,13 @@ def create_folder_structure():
     """Cria a estrutura de pastas necessária"""
     base_terrains = ['floresta', 'deserto', 'cidade', 'planicie', 'costa']
     default_categories = {
-        "1-5": {"category": "Humanoide", "file": "humanoide/tipos.json"},
-        "6-11": {"category": "Animal", "file": "animal/tipos.json"},
-        "12-15": {"category": "Monstro", "file": "monstro/tipos.json"},
-        "16-17": {"category": "Morto-vivo", "file": "morto-vivo/tipos.json"},
-        "18": {"category": "Espirito", "file": "espirito/tipos.json"},
-        "19": {"category": "Construto", "file": "construto/tipos.json"},
-        "20": {"category": "Lefeu", "file": "lefeu/tipos.json"}
+        "Humanoide|humanoide/tipos.json": 12,
+        "Animal|animal/tipos.json": 8,
+        "Monstro|monstro/tipos.json": 6,
+        "Construto|construto/tipos.json": 4,
+        "Morto-vivo|morto-vivo/tipos.json": 3,
+        "Espirito|espirito/tipos.json": 2,
+        "Lefeu|lefeu/tipos.json": 1
     }
 
     for terrain in base_terrains:
@@ -35,7 +35,7 @@ def create_folder_structure():
             with open(categories_file, 'w', encoding='utf-8') as f:
                 json.dump(default_categories, f, indent=2)
         
-        # Cria arquivos básicos de criaturas com estrutura de tipos e condições
+        # Cria arquivos básicos de criaturas
         creature_types = {
             'humanoide': ['tipos.json', 'condicoes.json', 'racas.json'],
             'animal': ['tipos.json', 'condicoes.json'],
@@ -52,11 +52,24 @@ def create_folder_structure():
                 if not os.path.exists(f'encounters/{terrain}/creatures/{folder}/{file}'):
                     with open(f'encounters/{terrain}/creatures/{folder}/{file}', 'w', encoding='utf-8') as f:
                         if 'tipos' in file:
-                            json.dump({"1-20": f"Exemplo de tipo de {folder}"}, f)
+                            json.dump({
+                                f"Exemplo de tipo de {folder} 1": 3,
+                                f"Exemplo de tipo de {folder} 2": 2,
+                                f"Exemplo de tipo de {folder} 3": 1
+                            }, f, indent=2)
                         elif 'condicoes' in file:
-                            json.dump({"1-20": f"Exemplo de condição de {folder}"}, f)
+                            json.dump({
+                                f"Exemplo de condição de {folder} 1": 3,
+                                f"Exemplo de condição de {folder} 2": 2,
+                                f"Exemplo de condição de {folder} 3": 1
+                            }, f, indent=2)
                         elif 'racas' in file and folder == 'humanoide':
-                            json.dump({"1-20": "Exemplo de raça humana"}, f)
+                            json.dump({
+                                "Humano": 5,
+                                "Elfo": 3,
+                                "Anão": 2,
+                                "Outra raça": 1
+                            }, f, indent=2)
 
         # Cria outros arquivos de encontro
         for file in ['false_alarms.json', 'anomalies.json', 'temporary_obstacles.json', 'events.json']:
@@ -70,29 +83,62 @@ create_folder_structure()
 def debug_category_probabilities(terrain='floresta', samples=100000):
     """Analisa as probabilidades reais de encontro por categoria"""
     try:
-        categories = json.load(open(f'encounters/{terrain}/creatures/categories.json', encoding='utf-8'))
-        results = {data['category']: 0 for data in categories.values()}
+        with open(f'encounters/{terrain}/creatures/categories.json', 'r', encoding='utf-8') as f:
+            categories_data = json.load(f)
         
-        for _ in range(samples):
-            roll = random.randint(1, 20)
-            for range_str, data in categories.items():
-                if '-' in range_str:
-                    min_val, max_val = map(int, range_str.split('-'))
-                    if min_val <= roll <= max_val:
+        # Novo formato simplificado
+        if isinstance(categories_data, dict) and all('|' in key for key in categories_data.keys()):
+            categories = list(categories_data.keys())
+            weights = list(categories_data.values())
+            
+            results = {cat.split('|')[0]: 0 for cat in categories}
+            
+            for _ in range(samples):
+                selected = select_by_weight(categories_data)
+                category = selected.split('|')[0]
+                results[category] += 1
+            
+            print(f"\n=== DEBUG DE PROBABILIDADES ({terrain.upper()}) ===")
+            print(f"Baseado em {samples} simulações:")
+            total_weight = sum(weights)
+            
+            for category, count in sorted(results.items(), key=lambda x: x[1], reverse=True):
+                cat_weight = next(v for k, v in categories_data.items() if k.startswith(category))
+                theoretical = cat_weight / total_weight
+                actual = count / samples
+                print(f"{category}: {actual:.2%} (Teórico: {theoretical:.2%} | Diferença: {(actual-theoretical):+.2f}%)")
+            
+            return results
+        
+        # Formato antigo com intervalos
+        elif isinstance(categories_data, dict):
+            results = {data['category']: 0 for data in categories_data.values()}
+            
+            for _ in range(samples):
+                roll = random.randint(1, 20)
+                for range_str, data in categories_data.items():
+                    if '-' in range_str:
+                        min_val, max_val = map(int, range_str.split('-'))
+                        if min_val <= roll <= max_val:
+                            results[data['category']] += 1
+                            break
+                    elif int(range_str) == roll:
                         results[data['category']] += 1
                         break
-                elif int(range_str) == roll:
-                    results[data['category']] += 1
-                    break
+            
+            print(f"\n=== DEBUG DE PROBABILIDADES ({terrain.upper()}) ===")
+            print(f"Baseado em {samples} simulações:")
+            for category, count in sorted(results.items(), key=lambda x: x[1], reverse=True):
+                theoretical = calculate_theoretical_chance(categories_data, category)
+                diff = (count/samples*100) - (theoretical*100)
+                print(f"{category}: {count/samples:.2%} (Teórico: {theoretical:.2%} | Diferença: {diff:+.2f}%)")
+            
+            return results
         
-        print(f"\n=== DEBUG DE PROBABILIDADES ({terrain.upper()}) ===")
-        print(f"Baseado em {samples} simulações:")
-        for category, count in sorted(results.items(), key=lambda x: x[1], reverse=True):
-            theoretical = calculate_theoretical_chance(categories, category)
-            diff = (count/samples*100) - (theoretical*100)
-            print(f"{category}: {count/samples:.2%} (Teórico: {theoretical:.2%} | Diferença: {diff:+.2f}%)")
-        
-        return results
+        else:
+            print("Formato de categories.json não reconhecido")
+            return {}
+
     except Exception as e:
         print(f"Erro no debug: {str(e)}")
         return {}
@@ -117,7 +163,7 @@ def debug_encounter_types(terrain='floresta', samples=10000):
         results = {t: 0 for t in terrain_config.keys()}
         
         for _ in range(samples):
-            roll = random.randint(1, 20)
+            roll = random.randint(1, 200)
             for encounter, range_values in terrain_config.items():
                 if isinstance(range_values, list) and len(range_values) == 2:
                     if range_values[0] <= roll <= range_values[1]:
@@ -146,24 +192,96 @@ def load_terrain_encounters(terrain):
         'events': json.load(open(f'encounters/{terrain}/events.json', encoding='utf-8'))
     }
 
+def select_by_weight(options):
+    """Seleciona uma opção baseada em pesos, aceitando tanto o formato novo quanto o antigo"""
+    # Se for no formato {"descrição": peso, ...}
+    if isinstance(options, dict):
+        items = list(options.items())
+        descriptions = [item[0] for item in items]
+        weights = [item[1] for item in items]
+    # Se for no formato antigo {"options": [{"description":..., "weight":...}, ...]}
+    elif isinstance(options, dict) and 'options' in options:
+        descriptions = [opt['description'] for opt in options['options']]
+        weights = [opt['weight'] for opt in options['options']]
+    # Se for no formato muito antigo {"1-3": "descrição", ...}
+    elif isinstance(options, dict) and any('-' in k for k in options.keys()):
+        # Converte para o formato de pesos iguais
+        descriptions = list(options.values())
+        weights = [1] * len(descriptions)
+    else:
+        return "Indefinido"
+    
+    total = sum(weights)
+    r = random.uniform(0, total)
+    upto = 0
+    for i, weight in enumerate(weights):
+        if upto + weight >= r:
+            return descriptions[i]
+        upto += weight
+    return descriptions[-1]  # fallback
+
 def roll_for_detail(file_path):
-    """Rola detalhes específicos"""
+    """Rola detalhes específicos, compatível com vários formatos"""
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
             details = json.load(f)
         
-        roll = random.randint(1, 20)
-        for range_str, desc in details.items():
-            if '-' in range_str:
-                min_val, max_val = map(int, range_str.split('-'))
-                if min_val <= roll <= max_val:
-                    return desc
-            elif int(range_str) == roll:
-                return desc
-        return "Indefinido"
+        return select_by_weight(details)
     except Exception as e:
         print(f"Erro ao rolar detalhe: {str(e)}")
         return "Indefinido"
+
+def generate_creature(terrain):
+    """Gera uma criatura com tipo e características"""
+    try:
+        with open(f'encounters/{terrain}/creatures/categories.json', 'r', encoding='utf-8') as f:
+            categories_data = json.load(f)
+        
+        # Se for o novo formato simplificado (com |)
+        if isinstance(categories_data, dict) and all('|' in key for key in categories_data.keys()):
+            selected = select_by_weight(categories_data)
+            category, file_path = selected.split('|')
+            category_data = {'category': category.strip(), 'file': file_path.strip()}
+        # Se for o formato antigo com intervalos numéricos
+        elif isinstance(categories_data, dict):
+            roll = random.randint(1, 20)
+            category_data = None
+            for range_str, data in categories_data.items():
+                if '-' in range_str:
+                    min_val, max_val = map(int, range_str.split('-'))
+                    if min_val <= roll <= max_val:
+                        category_data = data
+                        break
+                elif int(range_str) == roll:
+                    category_data = data
+                    break
+        else:
+            return {'descricao': "Criatura desconhecida", 'tipo': None}
+
+        if not category_data:
+            return {'descricao': "Criatura desconhecida", 'tipo': None}
+
+        folder_name = category_data['category'].lower().replace('í', 'i').replace(' ', '-')
+        base_path = f'encounters/{terrain}/creatures/{folder_name}/'
+        
+        tipo = roll_for_detail(base_path + 'tipos.json')
+        condicao = roll_for_detail(base_path + 'condicoes.json')
+        
+        if category_data['category'].lower() == 'humanoide':
+            raca = roll_for_detail(base_path + 'racas.json')
+            return {
+                'descricao': f"Humanoide - {tipo} ({condicao}, {raca})",
+                'tipo': 'humanoide'
+            }
+        
+        return {
+            'descricao': f"{category_data['category']} - {tipo} ({condicao})",
+            'tipo': folder_name
+        }
+
+    except Exception as e:
+        print(f"Erro ao gerar criatura: {str(e)}")
+        return {'descricao': "Criatura indefinida", 'tipo': None}
 
 def map_category_to_type(category):
     """Mapeia categorias para tipos de características"""
@@ -177,54 +295,6 @@ def map_category_to_type(category):
         'Lefeu': 'lefeu'
     }
     return mapeamento.get(category, 'monstro')
-
-def generate_creature(terrain):
-    """Gera uma criatura com tipo e características"""
-    try:
-        categories = json.load(open(f'encounters/{terrain}/creatures/categories.json', encoding='utf-8'))
-        roll = random.randint(1, 20)
-        category_data = None
-        
-        for range_str, data in categories.items():
-            if '-' in range_str:
-                min_val, max_val = map(int, range_str.split('-'))
-                if min_val <= roll <= max_val:
-                    category_data = data
-                    break
-            elif int(range_str) == roll:
-                category_data = data
-                break
-        
-        if not category_data:
-            return {'descricao': "Criatura desconhecida", 'tipo': None}
-
-        # Obtém o nome da pasta baseado na categoria (em minúsculas e sem espaços)
-        folder_name = category_data['category'].lower().replace('í', 'i').replace(' ', '-')
-        base_path = f'encounters/{terrain}/creatures/{folder_name}/'
-        
-        # Rola o tipo da criatura
-        tipo = roll_for_detail(base_path + 'tipos.json')
-        
-        # Rola a condição da criatura
-        condicao = roll_for_detail(base_path + 'condicoes.json')
-        
-        # Se for humanoide, rola também a raça
-        if category_data['category'] == 'Humanoide':
-            raca = roll_for_detail(base_path + 'racas.json')
-            return {
-                'descricao': f"Humanoide - {tipo} ({condicao}, {raca})",
-                'tipo': 'humanoide'
-            }
-        
-        # Para outras criaturas
-        return {
-            'descricao': f"{category_data['category']} - {tipo} ({condicao})",
-            'tipo': folder_name  # Usa o nome da pasta como tipo
-        }
-
-    except Exception as e:
-        print(f"Erro ao gerar criatura: {str(e)}")
-        return {'descricao': "Criatura indefinida", 'tipo': None}
 
 def generate_single_encounter(is_night, terrain, encounter_type=None):
     """Gera um encontro completo com probabilidades por terreno"""

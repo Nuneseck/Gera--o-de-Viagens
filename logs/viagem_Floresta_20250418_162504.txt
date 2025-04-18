@@ -1,0 +1,20 @@
+=== Relatório de Viagem ===
+Terreno: Floresta
+Dias: 15
+Período: noite
+
+Dia 1: Criaturas: Criatura indefinida (De tarde)
+Dia 2: Evento especial: O antigo esqueleto de um gigante das nuvens coberto por vegetação repousa sobre o solo. Há uma arma magica +1 cravada nele, se ela for retirada o esqueleto ganha vida repentinamente e destroi tudo em seu caminho enquanto vaga sem rumo. Depois de 2d10+2 dias ele recobra a concienca que tinha antes de ser um morto-vivo (De manhã)
+Dia 3: Sem encontros
+Dia 4: Criaturas: Criatura indefinida (De tarde)
+Dia 5: Criaturas: Criatura indefinida (Meio-dia)
+Dia 6: Sem encontros
+Dia 7: Obstáculo + Criaturas: Névoa baixa cobre o chão até os joelhos, escondendo obstáculos como pedras e buracos (Acrobacia CD 13). e Criatura indefinida (De tarde)
+Dia 8: Sem encontros
+Dia 9: Criaturas: Criatura indefinida (Anoitecer)
+Dia 10: Alarme falso: Uma árvore parcialmente queimada, com marcas de garras profundas — parece recente, mas ao tocar, percebe-se que é tudo velho e ressecado. (De noite)
+Dia 11: Sem encontros
+Dia 12: Criaturas + Anomalia: Criatura indefinida e Um animal pequeno passa correndo pelo grupo (De noite)
+Dia 13: Anomalia: Um galho quebra alto na floresta, mas não há nada lá (De noite)
+Dia 14: Sem encontros
+Dia 15: Anomalia: Um galho quebra alto na floresta, mas não há nada lá (De tarde)
