@@ -1,0 +1,10 @@
+{
+    "Ao amanhecer": [1, 2],
+    "De manhã": [3, 6],
+    "Meio-dia": [7, 8],
+    "De tarde": [9, 12],
+    "Anoitecer": [13, 16],
+    "De noite": [17, 18],
+    "Durante um descanso curto ou longo": 19,
+    "Enquanto se preparam para um descanso longo": 20
+}

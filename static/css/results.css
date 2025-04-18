@@ -1,0 +1,209 @@
+:root {
+    --primary: #8B0000;  /* Vermelho escuro */
+    --secondary: #5D0000; /* Vermelho mais escuro */
+    --dark: #1A0A0A;     /* Preto com tom vermelho */
+    --accent: #D22B2B;   /* Vermelho vivo */
+    --danger: #FF3333;   /* Vermelho de erro */
+    --tormenta-dark: #3D0000; /* Vermelho tormenta escuro */
+    --tormenta-light: #FF4D4D; /* Destaques */
+    --blood-red: #6A0000;       /* Vermelho sangue principal */
+    --dark-crimson: #450000;    /* Vermelho mais escuro */
+    --parchment-dark: #3a3f3c;       /* Cor de pergaminho para fundo */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--parchment-dark);
+    color: var(--ink);
+    line-height: 1.6;
+    background-image: 
+        url('https://www.transparenttextures.com/patterns/leather.png'),
+        url('https://www.transparenttextures.com/patterns/blood-pattern.png');
+    background-blend-mode: multiply;
+    background-attachment: fixed;
+}
+
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(145deg, var(--blood-red), var(--dark-crimson));
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    color: rgb(255, 255, 255);
+    font-family: 'MedievalSharp', cursive;
+    border-bottom: 3px solid var(--gold);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.results-container {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.day-card {
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+    border-left: 4px solid var(--primary);
+    background-color: rgba(0, 0, 0, 0.233);
+    border-radius: 0 4px 4px 0;
+}
+
+.day-card h3 {
+    color: var(--secondary);
+    margin-bottom: 0.5rem;
+    font-family: 'MedievalSharp', cursive;
+}
+
+.encounter, .caracteristica {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: rgba(139, 19, 19, 0.1);
+    border-radius: 4px;
+}
+
+.no-encounter {
+    color: var(--secondary);
+    font-style: italic;
+}
+
+.time-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    background-color: var(--accent);
+    color: white;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+}
+
+.download-section {
+    background-color: rgba(139, 19, 19, 0.1);
+    padding: 1.5rem;
+    margin-top: 2rem;
+    border-radius: 8px;
+    text-align: center;
+    border: 1px dashed var(--primary);
+}
+
+.btn {
+    display: inline-block;
+    background-color: var(--primary);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    background-color: var(--secondary);
+    transform: translateY(-2px);
+}
+
+.caracteristicas-section {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--primary);
+}
+
+.caracteristicas-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.caracteristicas-input {
+    width: 60px;
+    padding: 0.5rem;
+    border: 1px solid var(--primary);
+    border-radius: 4px;
+}
+
+.erro {
+    color: var(--danger);
+    font-style: italic;
+}
+
+.text-center {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.btn-caracteristicas {
+    background: linear-gradient(to bottom, var(--accent), var(--primary));
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: 1px solid var(--tormenta-dark);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3),
+                inset 0 1px 1px rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-caracteristicas:hover {
+    background: linear-gradient(to bottom, var(--tormenta-light), var(--accent));
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.btn-caracteristicas:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.btn-caracteristicas:disabled {
+    background: #5D5D5D;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Efeito de sangue/gota opcional */
+.btn-caracteristicas::after {
+    content: '';
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 20px;
+    height: 20px;
+    background-color: var(--tormenta-light);
+    opacity: 0.6;
+    border-radius: 50%;
+    transform: scale(0);
+    transition: transform 0.3s ease;
+}
+
+.btn-caracteristicas:hover::after {
+    transform: scale(1);
+}

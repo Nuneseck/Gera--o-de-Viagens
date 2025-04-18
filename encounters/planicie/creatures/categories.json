@@ -1,0 +1,9 @@
+{
+    "1-5": {"category": "Humanoide", "file": "humanoide/tipos.json"},
+    "6-11": {"category": "Animal", "file": "animal/tipos.json"},
+    "12-15": {"category": "Monstro", "file": "monstro/tipos.json"},
+    "16-17": {"category": "Construto", "file": "construto/tipos.json"},
+    "18": {"category": "Morto-vivo", "file": "morto-vivo/tipos.json"},
+    "19": {"category": "Espirito", "file": "espirito/tipos.json"},
+    "20": {"category": "Lefeu", "file": "lefeu/tipos.json"}
+}

@@ -1,0 +1,15 @@
+=== Relatório de Viagem ===
+Terreno: Floresta
+Dias: 10
+Período: noite
+
+Dia 1: Sem encontros
+Dia 2: Criaturas: Construto - Aves de rapina agressivas (De noite)
+Dia 3: Criaturas: Animal - Aranha gigante (De manhã)
+Dia 4: Anomalia: O vento faz barulhos estranhos entre as árvores (Meio-dia)
+Dia 5: Sem encontros
+Dia 6: Criaturas: Humanoide - Indefinido (Indefinido, Indefinido) (De tarde)
+Dia 7: Obstáculo temporário: Um pássaro voa abruptamente de um arbusto próximo (Meio-dia)
+Dia 8: Evento duplo: Animal - Lobo selvagem e Um pássaro voa abruptamente de um arbusto próximo e também Algo brilha à distância, mas é apenas um reflexo (De manhã)
+Dia 9: Criaturas: Humanoide - Indefinido (Indefinido, Indefinido) (De manhã)
+Dia 10: Criaturas + Anomalia: Monstro - Lobo selvagem e Um galho quebra alto na floresta, mas não há nada lá (De tarde)

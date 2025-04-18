@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados - Gerador de Viagens</title>
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/results.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Resultados para {{ terrain }}</h1>
+            <p>Viagem de {{ days }} dias</p>
+        </header>
+        
+        <div class="results-container">
+            {% for result in results %}
+                <div class="day-card">
+                    <h3>Dia {{ result.day }}</h3>
+                    
+                    {% if result.encounter %}
+                        <div class="encounter">
+                            <p><strong>Encontro:</strong> {{ result.encounter }}</p>
+                            {% if result.time_of_day %}
+                                <span class="time-badge">{{ result.time_of_day }}</span>
+                            {% endif %}
+                            
+                            {% if result.encounter_data and result.encounter_data.tipo %}
+                            <div class="caracteristicas-section">
+                                <div class="caracteristicas-controls">
+                                    <label for="qtd-{{result.day}}">Quantidade:</label>
+                                    <input type="number" id="qtd-{{result.day}}" 
+                                           min="1" max="5" value="1" 
+                                           class="caracteristicas-input">
+                                    <button type="button" class="btn-caracteristicas" 
+                                            data-tipo="{{ result.encounter_data.tipo }}" 
+                                            data-day="{{ result.day }}">
+                                        Gerar Características
+                                    </button>
+                                </div>
+                                
+                                <div id="caracteristicas-{{result.day}}" class="caracteristicas-container">
+                                    <!-- As características serão inseridas aqui via AJAX -->
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <p class="no-encounter">Nenhum encontro neste dia.</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            
+            {% if txt_file %}
+            <div class="download-section">
+                <h3>Relatório Completo</h3>
+                <a href="{{ url_for('serve_log', filename=txt_file.split('/')[-1]) }}" 
+                   class="download-btn" 
+                   download>
+                   Baixar Relatório (.txt)
+                </a>
+            </div>
+            {% endif %}
+            
+            <div class="back-button-container">
+                <a href="/" class="back-button">← Voltar</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $(document).ready(function() {
+        $('.btn-caracteristicas').click(function() {
+            const button = $(this);
+            const tipo = button.data('tipo');
+            const day = button.data('day');
+            const qtd = $('#qtd-'+day).val();
+            const container = $('#caracteristicas-'+day);
+            
+            button.prop('disabled', true).text('Gerando...');
+            container.html('<p>Carregando características...</p>');
+            
+            $.get('/gerar-caracteristicas/' + tipo, { qtd: qtd }, function(data) {
+                if (data.error) {
+                    container.html('<p class="erro">Erro: ' + data.error + '</p>');
+                    return;
+                }
+                
+                let html = '<h4>Características:</h4>';
+                data.forEach(function(carac) {
+                    html += `
+                    <div class="caracteristica">
+                        <h4>${carac.caracteristica}</h4>
+                        <p>${carac.efeito}</p>
+                    </div>`;
+                });
+                container.html(html);
+            }).fail(function() {
+                container.html('<p class="erro">Erro ao gerar características. Tente novamente.</p>');
+            }).always(function() {
+                button.prop('disabled', false).text('Gerar Características');
+            });
+        });
+    });
+    </script>
+</body>
+</html>
