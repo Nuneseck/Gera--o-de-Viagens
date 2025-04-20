@@ -649,16 +649,6 @@ def debug_all():
     
     return ''.join(results)
 
-if __name__ == '__main__':
-    if os.environ.get('DEBUG') == '1':
-        print("\n=== INICIANDO DEBUG ===")
-        debug_category_probabilities('floresta')
-        debug_encounter_types('floresta')
-    
-    app.run(debug=True)
-
-    # Acessa http://localhost:5000/debug/probabilidades/floresta ou http://localhost:5000/debug/all pra DEBUG
-
 # ============================================================ GERADOR DE HEXÁGONOS ======================================================================
 def load_hex_tables(terrain):
     """Carrega TODAS as tabelas específicas do terreno, com fallback para padrão"""
@@ -796,7 +786,7 @@ def generate_details(tables):
     return ""  # Para casos sem detalhes específicos
 
 @app.route('/gerar-hexagono', methods=['GET', 'POST'])
-def gerar_hexagono():  # Note: mantido "hexagono" sem acento
+def gerar_hexagono():
     terrains = json.load(open('tipos_terreno.json', encoding='utf-8'))
     
     if request.method == 'POST':
@@ -805,3 +795,13 @@ def gerar_hexagono():  # Note: mantido "hexagono" sem acento
         return render_template('hex_result.html', hex=hex_data, terrains=terrains)
     
     return render_template('hex_form.html', terrains=terrains)
+
+if __name__ == '__main__':
+    if os.environ.get('DEBUG') == '1':
+        print("\n=== INICIANDO DEBUG ===")
+        debug_category_probabilities('floresta')
+        debug_encounter_types('floresta')
+    
+    app.run(debug=True)
+
+    # Acessa http://localhost:5000/debug/probabilidades/floresta ou http://localhost:5000/debug/all pra DEBUG
