@@ -160,22 +160,39 @@ def debug_encounter_types(terrain='floresta', samples=10000):
     try:
         config = json.load(open('tipos_encontro.json', encoding='utf-8'))
         terrain_config = config.get(terrain, {})
-        results = {t: 0 for t in terrain_config.keys()}
         
-        for _ in range(samples):
-            roll = random.randint(1, 200)
-            for encounter, range_values in terrain_config.items():
-                if isinstance(range_values, list) and len(range_values) == 2:
-                    if range_values[0] <= roll <= range_values[1]:
+        # Se for o novo formato com pesos
+        if isinstance(terrain_config, dict) and all(isinstance(v, int) for v in terrain_config.values()):
+            results = {t: 0 for t in terrain_config.keys()}
+            total = sum(terrain_config.values())
+            
+            for _ in range(samples):
+                selected = select_by_weight(terrain_config)
+                results[selected] += 1
+            
+            print(f"\n=== DEBUG DE TIPOS DE ENCONTRO ({terrain.upper()}) ===")
+            for encounter, count in sorted(results.items(), key=lambda x: x[1], reverse=True):
+                theoretical = terrain_config[encounter] / total
+                print(f"{encounter}: {count/samples:.2%} (Teórico: {theoretical:.2%})")
+        
+        # Se for o formato antigo com intervalos
+        else:
+            results = {t: 0 for t in terrain_config.keys()}
+            
+            for _ in range(samples):
+                roll = random.randint(1, 20)
+                for encounter, range_values in terrain_config.items():
+                    if isinstance(range_values, list) and len(range_values) == 2:
+                        if range_values[0] <= roll <= range_values[1]:
+                            results[encounter] += 1
+                            break
+                    elif isinstance(range_values, int) and roll == range_values:
                         results[encounter] += 1
                         break
-                elif isinstance(range_values, int) and roll == range_values:
-                    results[encounter] += 1
-                    break
-        
-        print(f"\n=== DEBUG DE TIPOS DE ENCONTRO ({terrain.upper()}) ===")
-        for encounter, count in sorted(results.items(), key=lambda x: x[1], reverse=True):
-            print(f"{encounter}: {count/samples:.2%}")
+            
+            print(f"\n=== DEBUG DE TIPOS DE ENCONTRO ({terrain.upper()}) ===")
+            for encounter, count in sorted(results.items(), key=lambda x: x[1], reverse=True):
+                print(f"{encounter}: {count/samples:.2%}")
         
         return results
     except Exception as e:
@@ -314,16 +331,21 @@ def generate_single_encounter(is_night, terrain, encounter_type=None):
         if not encounter_type:
             config = json.load(open('tipos_encontro.json', encoding='utf-8'))
             terrain_config = config.get(terrain, {})
-            roll = random.randint(1, 20)
             
-            for encounter, range_values in terrain_config.items():
-                if isinstance(range_values, list) and len(range_values) == 2:
-                    if range_values[0] <= roll <= range_values[1]:
+            # Novo formato com pesos
+            if isinstance(terrain_config, dict) and all(isinstance(v, int) for v in terrain_config.values()):
+                encounter_type = select_by_weight(terrain_config)
+            # Formato antigo com intervalos
+            else:
+                roll = random.randint(1, 20)
+                for encounter, range_values in terrain_config.items():
+                    if isinstance(range_values, list) and len(range_values) == 2:
+                        if range_values[0] <= roll <= range_values[1]:
+                            encounter_type = encounter
+                            break
+                    elif isinstance(range_values, int) and roll == range_values:
                         encounter_type = encounter
                         break
-                elif isinstance(range_values, int) and roll == range_values:
-                    encounter_type = encounter
-                    break
 
         if not encounter_type:
             return {
@@ -636,3 +658,150 @@ if __name__ == '__main__':
     app.run(debug=True)
 
     # Acessa http://localhost:5000/debug/probabilidades/floresta ou http://localhost:5000/debug/all pra DEBUG
+
+# ============================================================ GERADOR DE HEXÁGONOS ======================================================================
+def load_hex_tables(terrain):
+    """Carrega TODAS as tabelas específicas do terreno, com fallback para padrão"""
+    tables = {}
+    terrain_path = f'encounters/hex/{terrain}/'
+    default_path = 'encounters/hex/_padrao/'
+    
+    table_types = [
+        'paisagens', 'sons', 'odores', 
+        'conteudo_local', 'obstaculos', 
+        'ruinas', 'assentamentos'
+    ]
+    
+    for table in table_types:
+        try:
+            # Tentativa 1: Carrega do terreno específico com UTF-8
+            try:
+                with open(terrain_path + f'{table}.json', 'r', encoding='utf-8') as f:
+                    tables[table] = json.load(f)
+            except FileNotFoundError:
+                # Tentativa 2: Carrega do padrão com UTF-8
+                with open(default_path + f'{table}.json', 'r', encoding='utf-8') as f:
+                    tables[table] = json.load(f)
+        except Exception as e:
+            print(f"Erro ao carregar {table}.json: {str(e)}")
+            # Fallback manual se ambos os arquivos falharem
+            tables[table] = {"Erro": f"Arquivo {table}.json não encontrado ou inválido"}
+    
+    return tables
+
+def converter_desc_para_tipo(desc):
+    """Converte a descrição textual para um tipo programático"""
+    if "Paisagem Mundana" in desc:
+        return "paisagem_mundana"
+    elif "Nada" in desc:
+        return "nada"
+    elif "Ruína" in desc:
+        return "ruina"
+    elif "Obstáculo" in desc and "+" not in desc:
+        return "obstaculo"
+    elif "Assentamento" in desc:
+        return "assentamento"
+    elif "Marco" in desc:
+        return "marco"
+    else:
+        return "combinado"
+
+def generate_hex_description(terrain):
+    # Carrega a distribuição principal
+    distribuicao = json.load(open('encounters/hex/distribuicao.json'))[terrain]
+    
+    # 1º Nível: Decide o tipo de conteúdo
+    tipo_conteudo = select_by_weight(distribuicao)  # Usa a função de seleção por peso
+    
+    # Carrega tabelas específicas do terreno
+    tabelas = load_hex_tables(terrain)
+    
+    # Gera elementos básicos (sempre presentes)
+    resultado = {
+        'terreno': terrain,
+        'paisagem': select_by_weight(tabelas['paisagens']),
+        'sons': select_by_weight(tabelas['sons']),
+        'odores': select_by_weight(tabelas['odores']),
+        'conteudo': None,
+        'detalhes': None
+    }
+    
+    # 2º Nível: Gera o conteúdo específico
+    if tipo_conteudo == 'paisagem_mundana':
+        resultado['conteudo'] = "Paisagem mundana"
+    
+    elif tipo_conteudo == 'nada':
+        resultado['conteudo'] = "Nada de especial"
+    
+    elif tipo_conteudo == 'obstaculo':
+        resultado['conteudo'] = "Obstáculo"
+        resultado['detalhes'] = select_by_weight(tabelas['obstaculos'])
+    
+    elif tipo_conteudo == 'ruina':
+        resultado['conteudo'] = "Ruínas"
+        resultado['detalhes'] = select_by_weight(tabelas['ruinas'])
+    
+    elif tipo_conteudo == 'assentamento':
+        resultado['conteudo'] = "Assentamento"
+        resultado['detalhes'] = select_by_weight(tabelas['assentamentos'])
+    
+    elif tipo_conteudo == 'combinado':
+        combinacao = select_by_weight({
+            "Obstáculo + Ruína": 3,
+            "Obstáculo + Paisagem": 2,
+            "Ruína + Assentamento": 1
+        })
+        resultado['conteudo'] = combinacao
+        
+        # Gera detalhes para cada parte da combinação
+        partes = combinacao.split(" + ")
+        detalhes = []
+        for parte in partes:
+            if parte == "Obstáculo":
+                detalhes.append(f"Obstáculo: {select_by_weight(tabelas['obstaculos'])}")
+            elif parte == "Ruína":
+                detalhes.append(f"Ruína: {select_by_weight(tabelas['ruinas'])}")
+            elif parte == "Paisagem":
+                detalhes.append(f"Paisagem: {select_by_weight(tabelas['paisagens'])}")
+            elif parte == "Assentamento":
+                detalhes.append(f"Assentamento: {select_by_weight(tabelas['assentamentos'])}")
+        
+        resultado['detalhes'] = " | ".join(detalhes)
+    
+    return resultado
+
+def generate_details(tables):
+    """Gera descrições específicas para conteúdo combinado"""
+    conteudo = select_by_weight(tables['conteudo_local'])
+    
+    if "Obstáculo" in conteudo and "+" in conteudo:
+        partes = conteudo.split(" + ")
+        detalhes = []
+        for parte in partes:
+            if "Obstáculo" in parte:
+                detalhes.append(f"Obstáculo: {select_by_weight(tables['obstaculos'])}")  # Fechou o parêntese
+            elif "Ruína" in parte:
+                detalhes.append(f"Ruína: {select_by_weight(tables['ruinas'])}")  # Fechou o parêntese
+            elif "Paisagem" in parte:
+                detalhes.append(f"Paisagem: {select_by_weight(tables['paisagens'])}")  # Fechou o parêntese
+        return " | ".join(detalhes)
+    
+    elif "Ruínas" in conteudo:
+        return select_by_weight(tables['ruinas'])
+    elif "Obstáculo" in conteudo:
+        return select_by_weight(tables['obstaculos'])
+    elif "Assentamento" in conteudo:
+        return select_by_weight(tables['assentamentos'])
+    
+    return ""  # Para casos sem detalhes específicos
+
+@app.route('/gerar-hexagono', methods=['GET', 'POST'])
+def gerar_hexagono():  # Note: mantido "hexagono" sem acento
+    terrains = json.load(open('tipos_terreno.json', encoding='utf-8'))
+    
+    if request.method == 'POST':
+        terreno = request.form['terreno']
+        hex_data = generate_hex_description(terreno)
+        return render_template('hex_result.html', hex=hex_data, terrains=terrains)
+    
+    return render_template('hex_form.html', terrains=terrains)

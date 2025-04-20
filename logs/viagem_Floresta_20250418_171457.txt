@@ -1,0 +1,15 @@
+=== Relatório de Viagem ===
+Terreno: Floresta
+Dias: 10
+Período: noite
+
+Dia 1: Criaturas: Animal - Exemplo de tipo de animal (Exemplo de tipo de animal) (Anoitecer)
+Dia 2: Sem encontros
+Dia 3: Anomalia: O vento faz barulhos estranhos entre as árvores (Durante um descanso curto ou longo)
+Dia 4: Criaturas: Monstro - Exemplo de tipo de monstro2 (Exemplo de tipo de monstro2) (Meio-dia)
+Dia 5: Criaturas: Espirito - Exemplo de tipo de espirito (Exemplo de tipo de espirito2) (Ao amanhecer)
+Dia 6: Criaturas: Animal - Exemplo de tipo de aniaml2 (Exemplo de tipo de aniaml2) (Ao amanhecer)
+Dia 7: Obstáculo temporário: Parte da floresta está tomada por videiras com espinhos cristalizados. Elas quebram como vidro, causando 1d4 de dano perfurante. (De noite)
+Dia 8: Criaturas: Monstro - Exemplo de tipo de monstro (Exemplo de tipo de monstro) (Anoitecer)
+Dia 9: Sem encontros
+Dia 10: Anomalia: Um galho quebra alto na floresta, mas não há nada lá (De noite)

@@ -1,0 +1,18 @@
+{
+    "floresta": {
+        "paisagem_mundana": 40,
+        "nada": 20,
+        "obstaculo": 15,
+        "ruina": 10,
+        "assentamento": 5,
+        "combinado": 10
+    },
+    "deserto": {
+        "paisagem_mundana": 30,
+        "nada": 25,
+        "obstaculo": 20,
+        "ruina": 15,
+        "assentamento": 5,
+        "combinado": 5
+    }
+}

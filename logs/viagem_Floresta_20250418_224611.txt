@@ -1,0 +1,6 @@
+=== Relatório de Viagem ===
+Terreno: Floresta
+Dias: 1
+Período: noite
+
+Dia 1: Sem encontros

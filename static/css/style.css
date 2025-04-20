@@ -171,3 +171,113 @@ button::after, .download-btn::after {
 button:hover::after, .download-btn:hover::after {
     transform: translate(0, 100%) rotate(45deg);
 }
+
+/* Botão de hexágono */
+.hex-option {
+    margin-top: 2rem;
+    text-align: center;
+    padding: 1rem;
+    border-top: 1px dashed var(--rust);
+}
+
+.hex-btn {
+    display: inline-block;
+    background: linear-gradient(to bottom, #9E0000, #9E0000);
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.hex-btn:hover {
+    background: linear-gradient(to bottom, #D10000, #D10000);
+    transform: translateY(-2px);
+}
+
+/* Estilo para a página de resultados do hexágono */
+.result-box {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+
+.result-item {
+    margin-bottom: 1.5rem;
+}
+
+.result-item.highlight {
+    background: rgba(106, 0, 0, 0.1);
+    padding: 1rem;
+    border-left: 3px solid var(--blood-red);
+}
+
+.details {
+    font-style: italic;
+    color: #555;
+}
+
+/* Estilos para o gerador de hexágonos */
+.results-container {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--rust);
+    background-image: url('https://www.transparenttextures.com/patterns/paper.png');
+    margin-top: 1rem;
+}
+
+.result-item {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px dashed var(--rust);
+}
+
+.result-item h3 {
+    color: var(--blood-red);
+    font-family: 'MedievalSharp', cursive;
+    margin-bottom: 0.5rem;
+}
+
+.result-item.highlight {
+    background-color: rgba(106, 0, 0, 0.05);
+    padding: 1rem;
+    border-left: 3px solid var(--blood-red);
+    border-bottom: none;
+}
+
+.details-box {
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 1rem;
+    margin-top: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.btn.secondary {
+    background: linear-gradient(to bottom, #6e6e6e, #4a4a4a);
+}
+
+.back-link {
+    margin-top: 1.5rem;
+    text-align: center;
+}
+
+.back-link a {
+    color: var(--blood-red);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.back-link a:hover {
+    text-decoration: underline;
+}
