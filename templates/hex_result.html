@@ -35,7 +35,7 @@
                 <p>{{ hex.conteudo }}</p>
                 {% if hex.detalhes %}
                 <div class="details-box">
-                    <p>{{ hex.detalhes }}</p>
+                    <p>{{ hex.detalhes|safe }}</p>
                 </div>
                 {% endif %}
             </div>

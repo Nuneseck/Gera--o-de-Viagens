@@ -1,18 +1,47 @@
 {
     "floresta": {
         "paisagem_mundana": 40,
-        "nada": 20,
+        "obstaculo": 15,
+        "ruina": 10,
+        "assentamento": 50,
+        "evento": 10,
+        "marco_paisagem": 10,
+        "obstaculo_ruina": 10
+    },
+    "deserto": {
+        "paisagem_mundana": 40,
         "obstaculo": 15,
         "ruina": 10,
         "assentamento": 5,
-        "combinado": 10
+        "evento": 10,
+        "marco_paisagem": 10,
+        "obstaculo_ruina": 10
     },
-    "deserto": {
+    "cidade": {
         "paisagem_mundana": 30,
-        "nada": 25,
         "obstaculo": 20,
-        "ruina": 15,
+        "ruina": 5,
+        "assentamento": 15,
+        "evento": 15,
+        "marco_paisagem": 5,
+        "obstaculo_ruina": 5
+    },
+    "planicie": {
+        "paisagem_mundana": 45,
+        "obstaculo": 10,
+        "ruina": 5,
+        "assentamento": 10,
+        "evento": 10,
+        "marco_paisagem": 10,
+        "obstaculo_ruina": 5
+    },
+    "costa": {
+        "paisagem_mundana": 35,
+        "obstaculo": 15,
+        "ruina": 10,
         "assentamento": 5,
-        "combinado": 5
+        "evento": 15,
+        "marco_paisagem": 10,
+        "obstaculo_ruina": 5
     }
 }

@@ -98,7 +98,7 @@ def debug_category_probabilities(terrain='floresta', samples=100000):
                 category = selected.split('|')[0]
                 results[category] += 1
             
-            print(f"\n=== DEBUG DE PROBABILIDADES ({terrain.upper()}) ===")
+            print(f"<br>=== DEBUG DE PROBABILIDADES ({terrain.upper()}) ===")
             print(f"Baseado em {samples} simulações:")
             total_weight = sum(weights)
             
@@ -126,7 +126,7 @@ def debug_category_probabilities(terrain='floresta', samples=100000):
                         results[data['category']] += 1
                         break
             
-            print(f"\n=== DEBUG DE PROBABILIDADES ({terrain.upper()}) ===")
+            print(f"<br>=== DEBUG DE PROBABILIDADES ({terrain.upper()}) ===")
             print(f"Baseado em {samples} simulações:")
             for category, count in sorted(results.items(), key=lambda x: x[1], reverse=True):
                 theoretical = calculate_theoretical_chance(categories_data, category)
@@ -170,7 +170,7 @@ def debug_encounter_types(terrain='floresta', samples=10000):
                 selected = select_by_weight(terrain_config)
                 results[selected] += 1
             
-            print(f"\n=== DEBUG DE TIPOS DE ENCONTRO ({terrain.upper()}) ===")
+            print(f"<br>=== DEBUG DE TIPOS DE ENCONTRO ({terrain.upper()}) ===")
             for encounter, count in sorted(results.items(), key=lambda x: x[1], reverse=True):
                 theoretical = terrain_config[encounter] / total
                 print(f"{encounter}: {count/samples:.2%} (Teórico: {theoretical:.2%})")
@@ -190,7 +190,7 @@ def debug_encounter_types(terrain='floresta', samples=10000):
                         results[encounter] += 1
                         break
             
-            print(f"\n=== DEBUG DE TIPOS DE ENCONTRO ({terrain.upper()}) ===")
+            print(f"<br>=== DEBUG DE TIPOS DE ENCONTRO ({terrain.upper()}) ===")
             for encounter, count in sorted(results.items(), key=lambda x: x[1], reverse=True):
                 print(f"{encounter}: {count/samples:.2%}")
         
@@ -463,12 +463,12 @@ def save_to_txt(results, terrain, days, is_night):
         filename = f"viagem_{terrain}_{timestamp}.txt"
         full_path = os.path.join('logs', filename)
         
-        content = f"=== Relatório de Viagem ===\n"
-        content += f"Terreno: {terrain}\nDias: {days}\nPeríodo: {'noite' if is_night else 'dia'}\n\n"
+        content = f"=== Relatório de Viagem ===<br>"
+        content += f"Terreno: {terrain}<br>Dias: {days}<br>Período: {'noite' if is_night else 'dia'}<br><br>"
         
         for r in results:
             content += f"Dia {r['day']}: "
-            content += f"{r['encounter']} ({r['time_of_day']})\n" if r['encounter'] else "Sem encontros\n"
+            content += f"{r['encounter']} ({r['time_of_day']})<br>" if r['encounter'] else "Sem encontros<br>"
         
         with open(full_path, 'w', encoding='utf-8') as f:
             f.write(content)
@@ -650,58 +650,168 @@ def debug_all():
     return ''.join(results)
 
 # ============================================================ GERADOR DE HEXÁGONOS ======================================================================
-def load_hex_tables(terrain):
-    """Carrega TODAS as tabelas específicas do terreno, com fallback para padrão"""
-    tables = {}
-    terrain_path = f'encounters/hex/{terrain}/'
-    default_path = 'encounters/hex/_padrao/'
-    
-    table_types = [
-        'paisagens', 'sons', 'odores', 
-        'conteudo_local', 'obstaculos', 
-        'ruinas', 'assentamentos'
-    ]
-    
-    for table in table_types:
-        try:
-            # Tentativa 1: Carrega do terreno específico com UTF-8
-            try:
-                with open(terrain_path + f'{table}.json', 'r', encoding='utf-8') as f:
-                    tables[table] = json.load(f)
-            except FileNotFoundError:
-                # Tentativa 2: Carrega do padrão com UTF-8
-                with open(default_path + f'{table}.json', 'r', encoding='utf-8') as f:
-                    tables[table] = json.load(f)
-        except Exception as e:
-            print(f"Erro ao carregar {table}.json: {str(e)}")
-            # Fallback manual se ambos os arquivos falharem
-            tables[table] = {"Erro": f"Arquivo {table}.json não encontrado ou inválido"}
-    
-    return tables
 
-def converter_desc_para_tipo(desc):
-    """Converte a descrição textual para um tipo programático"""
-    if "Paisagem Mundana" in desc:
-        return "paisagem_mundana"
-    elif "Nada" in desc:
-        return "nada"
-    elif "Ruína" in desc:
-        return "ruina"
-    elif "Obstáculo" in desc and "+" not in desc:
-        return "obstaculo"
-    elif "Assentamento" in desc:
-        return "assentamento"
-    elif "Marco" in desc:
-        return "marco"
+def generate_assentamento(terrain):
+    """Gera detalhes completos de um assentamento"""
+    base_path = f'encounters/hex/{terrain}/assentamentos/'
+    resultado = {
+        'tipo_assentamento': roll_for_detail(base_path + 'tipos.json'),
+        'ocupacao': roll_for_detail(base_path + 'ocupacao.json'),
+        'condicoes': roll_for_detail(base_path + 'condicoes.json')
+    }
+    
+    if resultado['ocupacao'] == 'Ocupado':
+        resultado.update({
+            'ocupantes': roll_for_detail(base_path + 'ocupantes.json')
+        })
+        detalhes = (f"Tipo: {resultado['tipo_assentamento']}<br>"
+                   f"Ocupação: {resultado['ocupacao']}<br>"
+                   f"Ocupantes: {resultado['ocupantes']}<br>"
+                   f"Condições: {resultado['condicoes']}")
     else:
-        return "combinado"
+        resultado['motivo_abandono'] = roll_for_detail(base_path + 'abandono.json')
+        detalhes = (f"Tipo: {resultado['tipo_assentamento']}<br>"
+                   f"Ocupação: {resultado['ocupacao']}<br>"
+                   f"Condições: {resultado['condicoes']}<br>"
+                   f"Motivo do abandono: {resultado['motivo_abandono']}")
+    
+    return {
+        'conteudo': f"Assentamento: {resultado['tipo_assentamento']}",
+        'detalhes': detalhes
+    }
+
+def generate_ruina(terrain):
+    """Gera detalhes completos de uma ruína"""
+    base_path = f'encounters/hex/{terrain}/ruinas/'
+    resultado = {
+        'tipo_ruina': roll_for_detail(base_path + 'tipos.json'),
+        'proposito_original': roll_for_detail(base_path + 'proposito_original.json'),
+        'proposito_atual': roll_for_detail(base_path + 'proposito_atual.json'),
+        'localizacao': roll_for_detail(base_path + 'localizacao.json'),
+        'peculiaridade': roll_for_detail(base_path + 'peculiaridade.json'),
+        'idade': roll_for_detail(base_path + 'idade.json'),
+        'ocupacao': roll_for_detail(base_path + 'ocupacao.json'),
+        'palavras_chave': select_multiple(base_path + 'palavras_chave.json', 1, 3)
+    }
+    
+    if resultado['ocupacao'] == 'Ocupado':
+        resultado['ocupantes'] = roll_for_detail(base_path + 'ocupantes.json')
+    
+    detalhes = (f"Tipo: {resultado['tipo_ruina']}<br>"
+               f"Propósito Original: {resultado['proposito_original']}<br>"
+               f"Propósito Atual: {resultado['proposito_atual']}<br>"
+               f"Localização: {resultado['localizacao']}<br>"
+               f"Peculiaridade: {resultado['peculiaridade']}<br>"
+               f"Idade: {resultado['idade']}<br>"
+               f"Ocupação: {resultado['ocupacao']}")
+    
+    if 'ocupantes' in resultado:
+        detalhes += f"<br>Ocupantes: {resultado['ocupantes']}"
+    
+    detalhes += f"<br>Palavras-chave: {resultado['palavras_chave']}"
+    
+    return {
+        'conteudo': f"Ruína: {resultado['tipo_ruina']}",
+        'detalhes': detalhes,
+        'tipo_especifico': 'ruina'
+    }
+
+def generate_obstaculo(terrain):
+    """Gera detalhes completos de um obstáculo"""
+    base_path = f'encounters/hex/{terrain}/obstaculo/'
+    
+    # Primeiro seleciona a categoria
+    categoria = roll_for_detail(base_path + 'categorias.json')
+    
+    # Depois seleciona o obstáculo específico baseado na categoria
+    if categoria == 'Perigos da floresta':
+        obstaculo = roll_for_detail(base_path + 'perigos_floresta.json')
+    elif categoria == 'Causado por humanoides':
+        obstaculo = roll_for_detail(base_path + 'humanos.json')
+    elif categoria == 'Sobrenatural':
+        obstaculo = roll_for_detail(base_path + 'sobrenatural.json')
+    elif categoria == 'Surto arcano':
+        obstaculo = roll_for_detail(base_path + 'surto_arcano.json')
+    else:
+        obstaculo = roll_for_detail(base_path + 'outro.json')
+    
+    detalhes = f"Categoria: {categoria}<br>Obstáculo: {obstaculo}"
+    
+    return {
+        'conteudo': f"Obstáculo: {obstaculo}",
+        'detalhes': detalhes,
+        'tipo_especifico': 'obstaculo'
+    }
+
+def generate_marco_paisagem(terrain):
+    """Gera detalhes completos de um marco na paisagem"""
+    base_path = f'encounters/hex/{terrain}/marco_paisagem/'
+    
+    # Seleciona o tipo de marco
+    tipo_marco = roll_for_detail(base_path + 'tipos.json')
+    
+    # Gera detalhes específicos do tipo
+    marco_path = f"{base_path}{tipo_marco}/"
+    resultado = {
+        'tipo_marco': tipo_marco,
+        'entrada': roll_for_detail(marco_path + 'entrada.json'),
+        'peculiaridade': roll_for_detail(base_path + 'peculiaridade.json'),
+        'palavras_chave': select_multiple(base_path + 'palavras_chave.json', 0, 3)
+    }
+    
+    # Adiciona campos específicos conforme o tipo
+    if os.path.exists(marco_path + 'interior.json'):
+        resultado['interior'] = roll_for_detail(marco_path + 'interior.json')
+    
+    if os.path.exists(marco_path + 'habitantes.json'):
+        resultado['habitantes'] = roll_for_detail(marco_path + 'habitantes.json')
+    
+    if os.path.exists(marco_path + 'peculiaridade.json'):
+        resultado['peculiaridade_especifica'] = roll_for_detail(marco_path + 'peculiaridade.json')
+    
+    # Construção da descrição
+    detalhes = f"Tipo: {resultado['tipo_marco']}<br>"
+    detalhes += f"Entrada: {resultado['entrada']}<br>"
+    
+    if 'interior' in resultado:
+        detalhes += f"Interior: {resultado['interior']}<br>"
+    
+    if 'habitantes' in resultado:
+        detalhes += f"Habitantes: {resultado['habitantes']}<br>"
+    
+    detalhes += f"Peculiaridade: {resultado['peculiaridade']}<br>"
+    
+    if 'peculiaridade_especifica' in resultado:
+        detalhes += f"Peculiaridade Específica: {resultado['peculiaridade_especifica']}<br>"
+    
+    detalhes += f"Palavras-chave: {resultado['palavras_chave']}"
+    
+    return {
+        'conteudo': f"Marco: {resultado['tipo_marco']}",
+        'detalhes': detalhes,
+        'tipo_especifico': 'marco_paisagem'
+    }
+
+def select_multiple(file_path, min_select=1, max_select=3):
+    """Seleciona múltiplos itens de uma lista"""
+    with open(file_path, 'r', encoding='utf-8') as f:
+        options = json.load(f)
+    
+    if isinstance(options, dict):
+        options = list(options.keys())
+    
+    num = random.randint(min_select, min(max_select, len(options)))
+    selected = random.sample(options, num)
+    return ", ".join(selected)
 
 def generate_hex_description(terrain):
+    """Gera uma descrição completa de um hexágono"""
     # Carrega a distribuição principal
-    distribuicao = json.load(open('encounters/hex/distribuicao.json'))[terrain]
+    with open('encounters/hex/distribuicao.json', 'r', encoding='utf-8') as f:
+        distribuicao = json.load(f)[terrain]
     
     # 1º Nível: Decide o tipo de conteúdo
-    tipo_conteudo = select_by_weight(distribuicao)  # Usa a função de seleção por peso
+    tipo_conteudo = select_by_weight(distribuicao)
     
     # Carrega tabelas específicas do terreno
     tabelas = load_hex_tables(terrain)
@@ -713,77 +823,57 @@ def generate_hex_description(terrain):
         'sons': select_by_weight(tabelas['sons']),
         'odores': select_by_weight(tabelas['odores']),
         'conteudo': None,
-        'detalhes': None
+        'detalhes': None,
+        'tipo': tipo_conteudo
     }
     
     # 2º Nível: Gera o conteúdo específico
     if tipo_conteudo == 'paisagem_mundana':
         resultado['conteudo'] = "Paisagem mundana"
-    
-    elif tipo_conteudo == 'nada':
-        resultado['conteudo'] = "Nada de especial"
-    
-    elif tipo_conteudo == 'obstaculo':
-        resultado['conteudo'] = "Obstáculo"
-        resultado['detalhes'] = select_by_weight(tabelas['obstaculos'])
-    
-    elif tipo_conteudo == 'ruina':
-        resultado['conteudo'] = "Ruínas"
-        resultado['detalhes'] = select_by_weight(tabelas['ruinas'])
+        resultado['detalhes'] = "Nada de especial além da paisagem normal do terreno."
     
     elif tipo_conteudo == 'assentamento':
-        resultado['conteudo'] = "Assentamento"
-        resultado['detalhes'] = select_by_weight(tabelas['assentamentos'])
+        resultado.update(generate_assentamento(terrain))
     
-    elif tipo_conteudo == 'combinado':
-        combinacao = select_by_weight({
-            "Obstáculo + Ruína": 3,
-            "Obstáculo + Paisagem": 2,
-            "Ruína + Assentamento": 1
-        })
-        resultado['conteudo'] = combinacao
-        
-        # Gera detalhes para cada parte da combinação
-        partes = combinacao.split(" + ")
-        detalhes = []
-        for parte in partes:
-            if parte == "Obstáculo":
-                detalhes.append(f"Obstáculo: {select_by_weight(tabelas['obstaculos'])}")
-            elif parte == "Ruína":
-                detalhes.append(f"Ruína: {select_by_weight(tabelas['ruinas'])}")
-            elif parte == "Paisagem":
-                detalhes.append(f"Paisagem: {select_by_weight(tabelas['paisagens'])}")
-            elif parte == "Assentamento":
-                detalhes.append(f"Assentamento: {select_by_weight(tabelas['assentamentos'])}")
-        
-        resultado['detalhes'] = " | ".join(detalhes)
+    elif tipo_conteudo == 'ruina':
+        resultado.update(generate_ruina(terrain))
+    
+    elif tipo_conteudo == 'obstaculo':
+        resultado.update(generate_obstaculo(terrain))
+    
+    elif tipo_conteudo == 'marco_paisagem':
+        resultado.update(generate_marco_paisagem(terrain))
+    
+    elif tipo_conteudo == 'evento':
+        resultado['conteudo'] = "Evento especial"
+        resultado['detalhes'] = select_by_weight(tabelas['eventos'])
+    
+    elif tipo_conteudo == 'obstaculo_ruina':
+        obstaculo = generate_obstaculo(terrain)
+        ruina = generate_ruina(terrain)
+        resultado['conteudo'] = f"{obstaculo['conteudo']} + {ruina['conteudo']}"
+        resultado['detalhes'] = f"{obstaculo['detalhes']}<br><br>{ruina['detalhes']}"
     
     return resultado
 
-def generate_details(tables):
-    """Gera descrições específicas para conteúdo combinado"""
-    conteudo = select_by_weight(tables['conteudo_local'])
+def load_hex_tables(terrain):
+    """Carrega TODAS as tabelas específicas do terreno"""
+    tables = {}
+    terrain_path = f'encounters/hex/{terrain}/'
     
-    if "Obstáculo" in conteudo and "+" in conteudo:
-        partes = conteudo.split(" + ")
-        detalhes = []
-        for parte in partes:
-            if "Obstáculo" in parte:
-                detalhes.append(f"Obstáculo: {select_by_weight(tables['obstaculos'])}")  # Fechou o parêntese
-            elif "Ruína" in parte:
-                detalhes.append(f"Ruína: {select_by_weight(tables['ruinas'])}")  # Fechou o parêntese
-            elif "Paisagem" in parte:
-                detalhes.append(f"Paisagem: {select_by_weight(tables['paisagens'])}")  # Fechou o parêntese
-        return " | ".join(detalhes)
+    table_types = [
+        'paisagens', 'sons', 'odores', 'eventos'
+    ]
     
-    elif "Ruínas" in conteudo:
-        return select_by_weight(tables['ruinas'])
-    elif "Obstáculo" in conteudo:
-        return select_by_weight(tables['obstaculos'])
-    elif "Assentamento" in conteudo:
-        return select_by_weight(tables['assentamentos'])
+    for table in table_types:
+        try:
+            with open(terrain_path + f'{table}.json', 'r', encoding='utf-8') as f:
+                tables[table] = json.load(f)
+        except Exception as e:
+            print(f"Erro ao carregar {table}.json: {str(e)}")
+            tables[table] = {"Erro": f"Arquivo {table}.json não encontrado ou inválido"}
     
-    return ""  # Para casos sem detalhes específicos
+    return tables
 
 @app.route('/gerar-hexagono', methods=['GET', 'POST'])
 def gerar_hexagono():
@@ -792,13 +882,26 @@ def gerar_hexagono():
     if request.method == 'POST':
         terreno = request.form['terreno']
         hex_data = generate_hex_description(terreno)
-        return render_template('hex_result.html', hex=hex_data, terrains=terrains)
+        return render_template('hex_result.html', 
+                            hex=hex_data, 
+                            terrains=terrains,
+                            format_details=format_hex_details)
     
     return render_template('hex_form.html', terrains=terrains)
 
+def format_hex_details(hex_data):
+    """Formata os detalhes do hexágono para exibição HTML"""
+    if not hex_data['detalhes']:
+        return ""
+    
+    if isinstance(hex_data['detalhes'], str):
+        return hex_data['detalhes'].replace('<br>', '<br>')
+    
+    return str(hex_data['detalhes'])
+
 if __name__ == '__main__':
     if os.environ.get('DEBUG') == '1':
-        print("\n=== INICIANDO DEBUG ===")
+        print("<br>=== INICIANDO DEBUG ===")
         debug_category_probabilities('floresta')
         debug_encounter_types('floresta')
     
