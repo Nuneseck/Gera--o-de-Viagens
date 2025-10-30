@@ -1,7 +1,10 @@
 {
-    "floresta": "Floresta",
+    "artico": "Ártico",
+    "cidade": "Cidade",
     "costa": "Costa",
     "deserto": "Deserto",
-    "planicie": "Planície",
-    "cidade": "Cidade"
+    "floresta": "Floresta",
+    "montanha": "Montanha",
+    "pantano": "Pantâno",
+    "planicie": "Planície"
 }

@@ -1,47 +1,74 @@
 {
-    "floresta": {
-        "paisagem_mundana": 40,
-        "obstaculo": 15,
-        "ruina": 10,
-        "assentamento": 50,
-        "evento": 10,
-        "marco_paisagem": 10,
-        "obstaculo_ruina": 10
-    },
-    "deserto": {
-        "paisagem_mundana": 40,
-        "obstaculo": 15,
-        "ruina": 10,
-        "assentamento": 5,
-        "evento": 10,
-        "marco_paisagem": 10,
-        "obstaculo_ruina": 10
-    },
-    "cidade": {
-        "paisagem_mundana": 30,
-        "obstaculo": 20,
-        "ruina": 5,
-        "assentamento": 15,
-        "evento": 15,
-        "marco_paisagem": 5,
-        "obstaculo_ruina": 5
-    },
-    "planicie": {
-        "paisagem_mundana": 45,
-        "obstaculo": 10,
-        "ruina": 5,
-        "assentamento": 10,
-        "evento": 10,
-        "marco_paisagem": 10,
-        "obstaculo_ruina": 5
-    },
-    "costa": {
-        "paisagem_mundana": 35,
-        "obstaculo": 15,
-        "ruina": 10,
-        "assentamento": 5,
-        "evento": 15,
-        "marco_paisagem": 10,
-        "obstaculo_ruina": 5
-    }
+  "artico": {
+    "paisagem_mundana": 35,
+    "obstaculo": 20,
+    "ruina": 10,
+    "assentamento": 5,
+    "evento": 10,
+    "marco_paisagem": 15,
+    "obstaculo_ruina": 5
+  },
+  "cidade": {
+    "paisagem_mundana": 10,
+    "obstaculo": 10,
+    "ruina": 5,
+    "assentamento": 45,
+    "evento": 20,
+    "marco_paisagem": 5,
+    "obstaculo_ruina": 5
+  },
+  "costa": {
+    "paisagem_mundana": 25,
+    "obstaculo": 15,
+    "ruina": 15,
+    "assentamento": 15,
+    "evento": 10,
+    "marco_paisagem": 15,
+    "obstaculo_ruina": 5
+  },
+  "deserto": {
+    "paisagem_mundana": 30,
+    "obstaculo": 20,
+    "ruina": 10,
+    "assentamento": 5,
+    "evento": 10,
+    "marco_paisagem": 15,
+    "obstaculo_ruina": 10
+  },
+  "floresta": {
+    "paisagem_mundana": 33,
+    "obstaculo": 15,
+    "ruina": 5,
+    "assentamento": 15,
+    "evento": 8,
+    "marco_paisagem": 18,
+    "obstaculo_ruina": 10
+  },
+  "montanha": {
+    "paisagem_mundana": 20,
+    "obstaculo": 25,
+    "ruina": 10,
+    "assentamento": 8,
+    "evento": 7,
+    "marco_paisagem": 20,
+    "obstaculo_ruina": 10
+  },
+  "pantano": {
+    "paisagem_mundana": 25,
+    "obstaculo": 25,
+    "ruina": 10,
+    "assentamento": 5,
+    "evento": 15,
+    "marco_paisagem": 10,
+    "obstaculo_ruina": 10
+  },
+  "planicie": {
+    "paisagem_mundana": 45,
+    "obstaculo": 10,
+    "ruina": 10,
+    "assentamento": 15,
+    "evento": 5,
+    "marco_paisagem": 10,
+    "obstaculo_ruina": 5
+  }
 }

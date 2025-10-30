@@ -1,11 +1,13 @@
+/* style.css - Arquivo Completo e Corrigido */
+
 :root {
-    --blood-red: #6A0000;       /* Vermelho sangue principal */
-    --dark-crimson: #450000;    /* Vermelho mais escuro */
-    --scarlet: #9E0000;         /* Destaques vermelhos */
-    --gore: #D10000;            /* Vermelho vivo para acentos */
-    --parchment-dark: #3a3f3c;       /* Cor de pergaminho para fundo */
-    --ink: #1A0A0A;             /* Cor de tinta para texto */
-    --rust: #B7410E;            /* Cor de ferrugem para bordas */
+    --blood-red: #6A0000;      /* Vermelho sangue principal */
+    --dark-crimson: #450000;   /* Vermelho mais escuro */
+    --scarlet: #9E0000;        /* Destaques vermelhos */
+    --gore: #D10000;           /* Vermelho vivo para acentos */
+    --parchment-dark: #3a3f3c;  /* Cor de pergaminho para fundo */
+    --ink: #1A0A0A;            /* Cor de tinta para texto */
+    --rust: #B7410E;           /* Cor de ferrugem para bordas */
 }
 
 * {
@@ -102,61 +104,69 @@ select:focus, input[type="number"]:focus {
     gap: 0.5rem;
 }
 
-button, .download-btn {
-    background: linear-gradient(to bottom, var(--scarlet), var(--blood-red));
-    color: white;
-    border: none;
-    padding: 1rem 2rem;
-    font-size: 1.1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.3s ease;
+
+/* ======================================================= */
+/* ÁREA DOS BOTÕES - CÓDIGO MODIFICADO E MELHORADO         */
+/* ======================================================= */
+
+/* 1. Classe base .btn para ESTILO ESTRUTURAL (reutilizável) */
+.btn {
+    /* Estrutura e espaçamento */
+    display: inline-block; /* Permite que links se comportem como botões */
     width: 100%;
+    padding: 1rem 2rem;
+    border-radius: 4px;
+    border: none;
+    
+    /* Texto */
+    color: white;
+    font-size: 1.1rem;
     font-weight: bold;
+    text-align: center;
     text-transform: uppercase;
+    text-decoration: none; /* Remove sublinhado dos links */
     letter-spacing: 1px;
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+
+    /* Efeitos */
+    cursor: pointer;
+    transition: all 0.3s ease;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     position: relative;
     overflow: hidden;
 }
 
-button:hover, .download-btn:hover {
-    background: linear-gradient(to bottom, var(--gore), var(--scarlet));
+.btn:hover {
     transform: translateY(-3px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
-button:active, .download-btn:active {
+.btn:active {
     transform: translateY(1px);
 }
 
-footer {
-    text-align: center;
-    margin-top: 2rem;
-    color: var(--dark-crimson);
-    font-size: 0.9rem;
-    padding: 1rem;
-    border-top: 1px dashed var(--rust);
+/* 2. Estilo para o botão primário (vermelho) */
+/* Agora só define a COR DE FUNDO */
+button.btn {
+    background: linear-gradient(to bottom, var(--scarlet), var(--blood-red));
 }
 
-.download-section {
-    margin-top: 2rem;
-    padding: 1.5rem;
-    background-color: rgba(106, 0, 0, 0.08);
-    border-radius: 8px;
-    text-align: center;
-    border: 1px dashed var(--rust);
+button.btn:hover {
+    background: linear-gradient(to bottom, var(--gore), var(--scarlet));
 }
 
-.download-btn {
-    display: inline-block;
-    width: auto;
-    margin-top: 1rem;
+/* 3. Estilo para o botão secundário (cinza/chumbo) */
+/* Também só define a COR DE FUNDO */
+.btn.secondary {
+    background: linear-gradient(to bottom, var(--scarlet), var(--blood-red));
 }
 
-/* Efeito de sangue escorrendo nos botões */
-button::after, .download-btn::after {
+.btn.secondary:hover {
+    background: linear-gradient(to bottom, var(--gore), var(--scarlet));
+}
+
+/* Efeito de brilho ao passar o mouse */
+.btn::after {
     content: '';
     position: absolute;
     top: -50%;
@@ -168,11 +178,24 @@ button::after, .download-btn::after {
     transition: transform 0.6s ease;
 }
 
-button:hover::after, .download-btn:hover::after {
+.btn:hover::after {
     transform: translate(0, 100%) rotate(45deg);
 }
 
-/* Botão de hexágono */
+/* ======================================================= */
+/* FIM DA ÁREA DOS BOTÕES                                  */
+/* ======================================================= */
+
+
+footer {
+    text-align: center;
+    margin-top: 2rem;
+    color: var(--dark-crimson);
+    font-size: 0.9rem;
+    padding: 1rem;
+    border-top: 1px dashed var(--rust);
+}
+
 .hex-option {
     margin-top: 2rem;
     text-align: center;
@@ -196,30 +219,8 @@ button:hover::after, .download-btn:hover::after {
     transform: translateY(-2px);
 }
 
-/* Estilo para a página de resultados do hexágono */
-.result-box {
-    background: rgba(255, 255, 255, 0.9);
-    padding: 2rem;
-    border-radius: 8px;
-    margin-top: 1rem;
-}
 
-.result-item {
-    margin-bottom: 1.5rem;
-}
-
-.result-item.highlight {
-    background: rgba(106, 0, 0, 0.1);
-    padding: 1rem;
-    border-left: 3px solid var(--blood-red);
-}
-
-.details {
-    font-style: italic;
-    color: #555;
-}
-
-/* Estilos para o gerador de hexágonos */
+/* Estilos para a página de resultados (ambos os geradores) */
 .results-container {
     background-color: rgba(255, 255, 255, 0.9);
     padding: 2rem;
@@ -234,6 +235,10 @@ button:hover::after, .download-btn:hover::after {
     margin-bottom: 1.5rem;
     padding-bottom: 1rem;
     border-bottom: 1px dashed var(--rust);
+}
+
+.result-item:last-child {
+    border-bottom: none; /* Remove a borda do último item */
 }
 
 .result-item h3 {
@@ -259,13 +264,14 @@ button:hover::after, .download-btn:hover::after {
 
 .action-buttons {
     display: flex;
+    flex-direction: row;
+    align-items: stretch; /* Faz com que ambos tenham a mesma altura */
     gap: 1rem;
     margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px dashed var(--rust);
 }
 
-.btn.secondary {
-    background: linear-gradient(to bottom, #6e6e6e, #4a4a4a);
-}
 
 .back-link {
     margin-top: 1.5rem;

@@ -1,7 +1,7 @@
 {
-    "Perigos da Floresta": 1,
-    "Humanos": 1,
-    "Sobrenatural": 1,
+    "Perigos da Floresta": 10,
+    "Causado por humanos": 6,
+    "Sobrenatural": 2,
     "Surto arcano": 1,
-    "Outro": 1
+    "Outro": 0
 }

@@ -1,0 +1,8 @@
+{
+    "Lugarejo, Povoado e Aldeia (até 100 pessoas)": 6,
+    "Vilarejo e Vila grande (100 a 1000 pessoas)": 5,
+    "Cidadela (1000 a 10000 pessoas)": 2,
+    "Cidade (10000 a 25000 pessoas)": 1,
+    "Fortificação": 3,
+    "Acampamento com assentamento improvisado": 3
+}
