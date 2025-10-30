@@ -1,0 +1,17 @@
+{
+  "iniciante": {
+    "Exemplo comum": 5,
+    "Exemplo comum2": 4
+  },
+  "veterano": {
+    "Exemplo incomum": 3,
+    "Exemplo incomum2": 2
+  },
+  "campeao": {
+    "Exemplo raro": 2,
+    "Exemplo raro2": 1
+  },
+  "lenda": {
+    "Exemplo lendario": 1
+  }
+}

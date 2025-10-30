@@ -1,0 +1,35 @@
+{
+  "iniciante": {
+    "2d4+2 Glops": 1,
+    "2d6 Aranhas gigantes": 1,
+    "1d4-1 Grifo": 1,
+    "1 Mantícora": 1,
+    "1 Centopeia-dragão": 1,
+    "1d4 Basiliscos": 1,
+    "1 Troll": 1,
+    "1 Dragão filhote": 1,
+    "1 Uktril  ": 1,
+    "1 Fanático Lefou": 1,
+    "1 Dragão Filhote do Bosque": 1,
+    "1 Carrasco de Lena": 1,
+    "1d4 Cocatriz": 1,
+    "1d4+1 Glooop": 1,
+    "2 Mamãe Glop": 1,
+    "1 Tigre-de-Hyninn": 1,
+    "1 Tatu-Montanha": 1,
+    "1d4 Warg": 1,
+    "1d4 Mercenário de Aslothia": 1,
+    "1d4 Fera-Vassalo": 1
+  },
+  "veterano": {
+    "Exemplo incomum": 3,
+    "Exemplo incomum2": 2
+  },
+  "campeao": {
+    "Exemplo raro": 2,
+    "Exemplo raro2": 1
+  },
+  "lenda": {
+    "Exemplo lendario": 1
+  }
+}

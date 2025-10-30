@@ -1,0 +1,30 @@
+{
+  "iniciante": {
+    "1d6+4 lobos": 1,
+    "1d4+1 lobos das cavernas": 1,
+    "1d6 Cascavel": 1,
+    "1d4+1 Jiboia": 1,
+    "1d4 Naja": 1,
+    "1d4-1 Sucuri": 1,
+    "1d4+1 Urso panda": 1,
+    "1d4 Urso Pardo": 1,
+    "1 Urso das Cavernas": 1,
+    "1d6+2 Capivaras": 1,
+    "2 Gorloggs alfa": 1,
+    "1d8 Leões": 1,
+    "1d6 Panteras": 1,
+    "1d4 Tigres": 1,
+    "1d4 Gorloggs": 1
+  },
+  "veterano": {
+    "Exemplo incomum": 3,
+    "Exemplo incomum2": 2
+  },
+  "campeao": {
+    "Exemplo raro": 2,
+    "Exemplo raro2": 1
+  },
+  "lenda": {
+    "Exemplo lendario": 1
+  }
+}

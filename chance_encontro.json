@@ -1,0 +1,34 @@
+{
+    "artico": {
+        "dia": 30,
+        "noite": 75
+    },
+    "cidade": {
+        "dia": 30,
+        "noite": 75
+},
+    "costa": {
+        "dia": 30,
+        "noite": 75
+},
+    "deserto": {
+        "dia": 30,
+        "noite": 75
+},
+    "floresta": {
+        "dia": 30,
+        "noite": 75
+},
+    "montanha": {
+        "dia": 30,
+        "noite": 75
+},
+    "pantano": {
+        "dia": 30,
+        "noite": 75
+},
+    "planicie": {
+        "dia": 30,
+        "noite": 75
+}
+} 
