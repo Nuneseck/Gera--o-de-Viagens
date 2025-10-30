@@ -12,7 +12,7 @@ class GeradorEquipamentos:
         try:
             with open(self.arquivo_json, 'r', encoding='utf-8') as f:
                 dados = json.load(f)
-                # Verifica se todos os itens têm peso definido
+                # Verifica se todos os itens têm peso definido, senão adiciona peso 1
                 for categoria in ['armas', 'armaduras', 'escudos']:
                     if categoria in dados:
                         if categoria == 'armas':
@@ -36,33 +36,36 @@ class GeradorEquipamentos:
         """Escolhe um item aleatório considerando os pesos"""
         if not lista_itens:
             return None
-
+        
         pesos = [item.get('peso', 1) for item in lista_itens]
-        total = sum(pesos)
-        if total == 0:
-            pesos = [1 for _ in pesos]
-            total = sum(pesos)
+        
+        # Se todos os pesos forem 0, trata todos como se tivessem peso 1
+        if sum(pesos) == 0:
+            pesos = [1] * len(lista_itens)
 
-        pesos_normalizados = [p/total for p in pesos]
-        return random.choices(lista_itens, weights=pesos_normalizados, k=1)[0]
+        return random.choices(lista_itens, weights=pesos, k=1)[0]
 
     def gerar_arma(self) -> Tuple[Optional[Dict], str]:
-        """Gera uma arma aleatória considerando pesos e categorias"""
-        # Escolhe primeiro a categoria da arma
+        """Gera uma arma aleatória e já retorna sua categoria para evitar buscas futuras."""
+        # Pesos para cada categoria de arma
         categorias = {
             'uma_mao': 40,
             'duas_maos': 40,
             'leves': 20
         }
-
-        categoria = random.choices(
+        # Escolhe a categoria com base nos pesos
+        categoria_escolhida = random.choices(
             list(categorias.keys()),
             weights=list(categorias.values()),
             k=1
         )[0]
-
-        arma = self.escolher_item_com_peso(self.dados['armas'].get(categoria, []))
-        return arma, categoria
+        
+        # Escolhe uma arma da lista da categoria sorteada
+        lista_armas = self.dados['armas'].get(categoria_escolhida, [])
+        arma = self.escolher_item_com_peso(lista_armas)
+        
+        # Retorna tanto a arma quanto a sua categoria
+        return arma, categoria_escolhida
 
     def gerar_armadura(self) -> Optional[Dict]:
         """Gera uma armadura aleatória considerando pesos"""
@@ -73,127 +76,117 @@ class GeradorEquipamentos:
         return self.escolher_item_com_peso(self.dados.get("escudos", []))
 
     def gerar_equipamentos(self, qtd_armas: int = 1, qtd_armaduras: int = 1) -> Dict:
-        """Gera um conjunto de equipamentos aleatórios com combinações lógicas"""
+        """Gera um conjunto de equipamentos aleatórios com combinações lógicas e otimizadas."""
         equipamentos = {
             "armas_primarias": [],
             "armaduras": [],
-            "armas_com_escudos": {},  # Dicionário para armazenar escudos associados a armas PRIMÁRIAS
-            "armas_duplas": {}       # Dicionário para armazenar armas leves associadas a armas PRIMÁRIAS
+            "armas_com_escudos": {},
+            "armas_duplas": {}
         }
 
-        # Gera as armas primárias
+        # === CORREÇÃO: Laço para gerar armaduras que estava faltando ===
+        for _ in range(qtd_armaduras):
+            armadura = self.gerar_armadura()
+            if armadura:
+                equipamentos["armaduras"].append(armadura)
+
+        # Armazena as armas primárias junto com suas categorias
+        armas_geradas_com_categoria = []
         for _ in range(qtd_armas):
             arma, categoria = self.gerar_arma()
-            equipamentos["armas_primarias"].append(arma)
-
-        # Processa cada arma primária para gerar adicionais
-        for arma_primaria in equipamentos["armas_primarias"]:
-            categoria = None
-            # Determina a categoria da arma primária (pode ser mais eficiente se a categoria fosse armazenada)
-            for subcategoria in self.dados['armas']:
-                if arma_primaria in self.dados['armas'][subcategoria]:
-                    categoria = subcategoria
-                    break
-            if categoria is None:
-                for subcategoria in self.dados['armas']:
-                    for item in self.dados['armas'][subcategoria]:
-                        if item['nome'] == arma_primaria['nome']:
-                            categoria = subcategoria
-                            break
-                    if categoria:
-                        break
+            if arma:
+                # Adicionamos a arma e sua categoria para uso futuro
+                armas_geradas_com_categoria.append((arma, categoria))
+                equipamentos["armas_primarias"].append(arma)
+        
+        # Processa cada arma primária para gerar adicionais (escudo ou arma secundária)
+        for arma_primaria, categoria in armas_geradas_com_categoria:
+            nome_arma = arma_primaria.get('nome', 'Arma Desconhecida')
 
             if categoria == 'uma_mao':
-                escudos_disponiveis = self.dados.get("escudos", [])
-                armas_leves_disponiveis = self.dados['armas'].get('leves', [])
+                # Lógica simplificada para escolher entre escudo, arma leve ou nada
+                opcoes_adicionais = ['escudo', 'arma_leve', 'nada']
+                pesos_adicionais = [70, 30, 20]
+                escolha = random.choices(opcoes_adicionais, weights=pesos_adicionais, k=1)[0]
 
-                adicional_gerado = False
-
-                chance_escudo = 0.7
-                chance_arma_leve = 0.3
-
-                if random.random() < chance_escudo:
-                    if escudos_disponiveis:
-                        escudo = self.escolher_item_com_peso(escudos_disponiveis)
-                        if escudo:
-                            equipamentos["armas_com_escudos"][arma_primaria['nome']] = escudo
-                            adicional_gerado = True
-                    if not adicional_gerado and armas_leves_disponiveis:
-                        arma_leve = self.escolher_item_com_peso(armas_leves_disponiveis)
-                        if arma_leve:
-                            equipamentos["armas_duplas"][arma_primaria['nome']] = arma_leve
-                            adicional_gerado = True
-                else:
-                    if armas_leves_disponiveis:
-                        arma_leve = self.escolher_item_com_peso(armas_leves_disponiveis)
-                        if arma_leve:
-                            equipamentos["armas_duplas"][arma_primaria['nome']] = arma_leve
-                            adicional_gerado = True
-                    if not adicional_gerado and escudos_disponiveis:
-                        escudo = self.escolher_item_com_peso(escudos_disponiveis)
-                        if escudo:
-                            equipamentos["armas_com_escudos"][arma_primaria['nome']] = escudo
-                            adicional_gerado = True
+                if escolha == 'escudo' and self.dados.get("escudos"):
+                    escudo = self.gerar_escudo()
+                    if escudo:
+                        equipamentos["armas_com_escudos"][nome_arma] = escudo
+                
+                elif escolha == 'arma_leve' and self.dados['armas'].get('leves'):
+                    arma_leve = self.escolher_item_com_peso(self.dados['armas']['leves'])
+                    if arma_leve:
+                        equipamentos["armas_duplas"][nome_arma] = arma_leve
+            
             elif categoria == 'leves':
-                armas_leves_disponiveis = self.dados['armas'].get('leves', [])
-                if armas_leves_disponiveis:
-                    outra_arma_leve = self.escolher_item_com_peso(armas_leves_disponiveis)
+                # Chance de 50% de gerar uma segunda arma leve para ambidestria
+                if random.random() < 0.8 and self.dados['armas'].get('leves'):
+                    outra_arma_leve = self.escolher_item_com_peso(self.dados['armas']['leves'])
                     if outra_arma_leve:
-                        equipamentos["armas_duplas"][arma_primaria['nome']] = outra_arma_leve
-
+                        equipamentos["armas_duplas"][nome_arma] = outra_arma_leve
+        
         return equipamentos
 
     def formatar_equipamento(self, equipamento: Dict, escudo: Optional[Dict] = None, arma_secundaria: Optional[Dict] = None) -> str:
         """Formata os detalhes de um equipamento como string, incluindo escudo e arma secundária se existirem"""
         if equipamento is None:
             return "Nenhum"
-
-        linha_nome = f"{equipamento['nome']} (Peso: {equipamento.get('peso', 1)})"
+        
+        nome_item = equipamento.get('nome', 'Item Desconhecido')
+        peso_item = equipamento.get('peso', 1)
+        linha_nome = f"{nome_item} (Peso: {peso_item})"
 
         if escudo:
-            linha_nome += f" + {escudo['nome']} (Defesa: {escudo['defesa']} | Penalidade: {escudo['penalidade']})"
-
+            nome_escudo = escudo.get('nome', 'Escudo')
+            defesa_escudo = escudo.get('defesa', '+?')
+            penalidade_escudo = escudo.get('penalidade', '?')
+            linha_nome += f" + {nome_escudo} (Defesa: {defesa_escudo} | Penalidade: {penalidade_escudo})"
+        
         if arma_secundaria:
-            linha_nome += f" + {arma_secundaria['nome']} (Peso: {arma_secundaria.get('peso', 1)})"
+            nome_secundaria = arma_secundaria.get('nome', 'Arma Secundária')
+            peso_secundaria = arma_secundaria.get('peso', 1)
+            linha_nome += f" + {nome_secundaria} (Peso: {peso_secundaria})"
 
         if "dano" in equipamento:  # É uma arma
             return (
                 f"{linha_nome}\n"
-                f"Dano: {equipamento['dano']} | Crítico: {equipamento['critico']}\n"
-                f"Alcance: {equipamento['alcance']} | Tipo: {equipamento['tipo']}\n"
-                f"Habilidade: {equipamento['habilidade']}"
+                f"Dano: {equipamento.get('dano', '?')} | Crítico: {equipamento.get('critico', '?')}\n"
+                f"Alcance: {equipamento.get('alcance', '?')} | Tipo: {equipamento.get('tipo', '?')}\n"
+                f"Habilidade: {equipamento.get('habilidade', '?')}"
             )
-        elif "defesa" in equipamento:  # É armadura
+        elif "defesa" in equipamento:  # É armadura ou escudo (embora escudo seja tratado acima)
             return (
                 f"{linha_nome}\n"
-                f"Defesa: {equipamento['defesa']} | Penalidade: {equipamento['penalidade']}"
+                f"Defesa: {equipamento.get('defesa', '?')} | Penalidade: {equipamento.get('penalidade', '?')}"
             )
+        return linha_nome # Fallback para itens sem categoria definida
 
     def salvar_resultados(self, equipamentos: Dict, arquivo_saida: str = "resultados_equipamentos.txt"):
         """Salva os resultados em um arquivo TXT, sobrescrevendo o anterior"""
         with open(arquivo_saida, 'w', encoding='utf-8') as f:
             f.write("=== RESULTADOS DA GERAÇÃO DE EQUIPAMENTOS ===\n\n")
-
+            
             # Armaduras
-            if equipamentos["armaduras"]:
+            if equipamentos.get("armaduras"):
                 f.write("=== ARMADURAS GERADAS ===\n")
                 for i, armadura in enumerate(equipamentos["armaduras"], 1):
                     f.write(f"\nArmadura {i}:\n")
                     f.write(self.formatar_equipamento(armadura) + "\n")
-
+            
             # Armas (com escudos e armas leves secundárias se aplicável)
-            if equipamentos["armas_primarias"]:
+            if equipamentos.get("armas_primarias"):
                 f.write("\n=== ARMAS GERADAS ===\n")
                 for i, arma_primaria in enumerate(equipamentos["armas_primarias"], 1):
-                    escudo = equipamentos["armas_com_escudos"].get(arma_primaria['nome'])
-                    arma_secundaria = equipamentos["armas_duplas"].get(arma_primaria['nome'])
-
+                    nome_arma = arma_primaria.get('nome', 'Arma Desconhecida')
+                    escudo = equipamentos.get("armas_com_escudos", {}).get(nome_arma)
+                    arma_secundaria = equipamentos.get("armas_duplas", {}).get(nome_arma)
                     f.write(f"\nArma {i}:\n")
                     f.write(self.formatar_equipamento(arma_primaria, escudo, arma_secundaria) + "\n")
-
-            if not any(equipamentos.values()):
+            
+            if not equipamentos.get("armaduras") and not equipamentos.get("armas_primarias"):
                 f.write("Nenhum equipamento foi gerado.\n")
-
+                
             f.write("\n=== FIM DOS RESULTADOS ===")
 
 def obter_quantidade(tipo: str) -> int:
@@ -209,7 +202,6 @@ def obter_quantidade(tipo: str) -> int:
 
 if __name__ == "__main__":
     gerador = GeradorEquipamentos()
-
     print("=== Gerador de Equipamentos para NPCs (Tormenta 20) ===")
     print("Sistema com categorias de armas e combinações automáticas\n")
 
@@ -224,22 +216,23 @@ if __name__ == "__main__":
     gerador.salvar_resultados(equipamentos)
 
     # Exibe os resultados no console
-    if equipamentos["armaduras"]:
+    print("\n--- Resultados ---")
+    if equipamentos.get("armaduras"):
         print("\n=== Armaduras Geradas ===")
         for i, armadura in enumerate(equipamentos["armaduras"], 1):
             print(f"\nArmadura {i}:")
             print(gerador.formatar_equipamento(armadura))
-
-    if equipamentos["armas_primarias"]:
+            
+    if equipamentos.get("armas_primarias"):
         print("\n=== Armas Geradas ===")
         for i, arma_primaria in enumerate(equipamentos["armas_primarias"], 1):
-            escudo = equipamentos["armas_com_escudos"].get(arma_primaria['nome'])
-            arma_secundaria = equipamentos["armas_duplas"].get(arma_primaria['nome'])
-
+            nome_arma = arma_primaria.get('nome', 'Arma Desconhecida')
+            escudo = equipamentos.get("armas_com_escudos", {}).get(nome_arma)
+            arma_secundaria = equipamentos.get("armas_duplas", {}).get(nome_arma)
             print(f"\nArma {i}:")
             print(gerador.formatar_equipamento(arma_primaria, escudo, arma_secundaria))
-
-    if not any(equipamentos.values()):
+            
+    if not equipamentos.get("armaduras") and not equipamentos.get("armas_primarias"):
         print("\nNenhum equipamento foi gerado.")
-
-    print("\nResultados salvos em 'resultados_equipamentos.txt'")
+        
+    print("\n\nResultados salvos em 'resultados_equipamentos.txt'")

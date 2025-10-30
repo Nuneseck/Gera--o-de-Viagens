@@ -1,5 +1,5 @@
 {
-    "floresta": {
+    "artico": {
         "false_alarm": 2,
         "creatures": 8,
         "anomaly": 2,
@@ -8,6 +8,21 @@
         "obstacle_creatures": 2,
         "event": 1,
         "double_roll": 1
+    },
+    "cidade": {
+        "false_alarm": 50,
+        "creatures": 10,
+        "event": 5
+    },
+    "costa": {
+        "false_alarm": [1, 1],
+        "creatures": [2, 10],
+        "anomaly": [11, 12],
+        "creatures_anomaly": [13, 14],
+        "temporary_obstacle": [15, 16],
+        "obstacle_creatures": [17, 18],
+        "event": [19, 19],
+        "double_roll": [20, 20]
     },
     "deserto": {
         "false_alarm": [1, 2],
@@ -19,22 +34,37 @@
         "event": [19, 19],
         "double_roll": [20, 20]
     },
-    "cidade": {
-        "false_alarm": [1, 5],
-        "creatures": [6, 15],
-        "event": [16, 20]
+    "floresta": {
+        "false_alarm": 2,
+        "creatures": 8,
+        "anomaly": 2,
+        "creatures_anomaly": 2,
+        "temporary_obstacle": 2,
+        "obstacle_creatures": 2,
+        "event": 1,
+        "double_roll": 1
+    },
+    "montanha": {
+        "false_alarm": 2,
+        "creatures": 8,
+        "anomaly": 2,
+        "creatures_anomaly": 2,
+        "temporary_obstacle": 2,
+        "obstacle_creatures": 2,
+        "event": 1,
+        "double_roll": 1
+    },
+    "pantano": {
+        "false_alarm": 2,
+        "creatures": 8,
+        "anomaly": 2,
+        "creatures_anomaly": 2,
+        "temporary_obstacle": 2,
+        "obstacle_creatures": 2,
+        "event": 1,
+        "double_roll": 1
     },
     "planicie": {
-        "false_alarm": [1, 1],
-        "creatures": [2, 10],
-        "anomaly": [11, 12],
-        "creatures_anomaly": [13, 14],
-        "temporary_obstacle": [15, 16],
-        "obstacle_creatures": [17, 18],
-        "event": [19, 19],
-        "double_roll": [20, 20]
-    },
-    "costa": {
         "false_alarm": [1, 1],
         "creatures": [2, 10],
         "anomaly": [11, 12],

@@ -1,0 +1,6 @@
+=== Relatório de Viagem ===
+Terreno: Floresta
+Dias: 1
+Período: dia
+
+Dia 1: Criaturas: Humanoide - 1d4 fanaticos do culto e 2d10 cultistas (Perdidos pedindo ajuda, Todos da mesma raça) (Anoitecer)

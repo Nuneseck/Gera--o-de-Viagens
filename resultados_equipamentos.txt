@@ -1,66 +1,107 @@
 === RESULTADOS DA GERAÇÃO DE EQUIPAMENTOS ===
 
+=== ARMADURAS GERADAS ===
+
+Armadura 1:
+Brunea (Peso: 25)
+Defesa: +5 | Penalidade: -2
+
+Armadura 2:
+Armadura de couro (Peso: 30)
+Defesa: +2 | Penalidade: 0
+
+Armadura 3:
+Couro batido (Peso: 30)
+Defesa: +3 | Penalidade: -1
+
+Armadura 4:
+Couro batido (Peso: 30)
+Defesa: +3 | Penalidade: -1
+
+Armadura 5:
+Armadura acolchoada (Peso: 30)
+Defesa: +1 | Penalidade: 0
+
+Armadura 6:
+Armadura de couro (Peso: 30)
+Defesa: +2 | Penalidade: 0
+
+Armadura 7:
+Gibão de peles (Peso: 25)
+Defesa: +4 | Penalidade: -3
+
+Armadura 8:
+Brunea (Peso: 25)
+Defesa: +5 | Penalidade: -2
+
+Armadura 9:
+Gibão de peles (Peso: 25)
+Defesa: +4 | Penalidade: -3
+
+Armadura 10:
+Armadura de couro (Peso: 30)
+Defesa: +2 | Penalidade: 0
 
 === ARMAS GERADAS ===
 
 Arma 1:
-Kum’shrak (Peso: 2)
-Dano: 1d8 | Crítico: x3
-Alcance: - | Tipo: Corte
-Habilidade: Força
+Clava (Peso: 10) + Escudo Grande (Defesa: +2 | Penalidade: -2)
+Dano: 1d6 | Crítico: x2
+Alcance: - | Tipo: Impacto
+Habilidade: -
 
 Arma 2:
-Bordão (Peso: 4) + Broquel (Defesa: +1 | Penalidade: 0)
-Dano: 1d6 | Crítico: x2
-Alcance: - | Tipo: Esmagamento
-Habilidade: -
+Pique (Peso: 8)
+Dano: 1d8 | Crítico: x2
+Alcance: - | Tipo: Perfuração
+Habilidade: Arma alongada.
 
 Arma 3:
-Porrete (Peso: 4) + Adaga (Peso: 4)
-Dano: 1d6 | Crítico: x2
-Alcance: - | Tipo: Esmagamento
-Habilidade: -
+Cimitarra (Peso: 5)
+Dano: 1d6 | Crítico: 18-20/x2
+Alcance: - | Tipo: Corte
+Habilidade: Arma ágil.
 
 Arma 4:
-Besta leve (Peso: 4) + Escudo Pequeno (Defesa: +1 | Penalidade: -1)
-Dano: 1d6 | Crítico: 19-20/x2
-Alcance: 18m | Tipo: Perfuração
+Cajado de batalha (Peso: 4)
+Dano: 1d8/1d8 | Crítico: x2
+Alcance: - | Tipo: Impacto
 Habilidade: -
 
 Arma 5:
-Maça (Peso: 4) + Escudo Grande (Defesa: +2 | Penalidade: -2)
-Dano: 1d6 | Crítico: x2
-Alcance: - | Tipo: Esmagamento
-Habilidade: -
+Serrilheira (Peso: 5) + Broquel (Defesa: +1 | Penalidade: 0)
+Dano: 1d6 | Crítico: 19-20/x2
+Alcance: - | Tipo: Corte
+Habilidade: Sempre que acerta um ataque com um resultado que ultrapassa a Defesa do alvo por 5 ou mais, você deixa a vítima vulnerável por 1 rodada e sangrando. 
 
 Arma 6:
-Wakizashi (Peso: 2)
-Dano: 1d6 | Crítico: 18-20/x2
-Alcance: - | Tipo: Corte
-Habilidade: Força
+Clava (Peso: 10) + Escudo Grande (Defesa: +2 | Penalidade: -2)
+Dano: 1d6 | Crítico: x2
+Alcance: - | Tipo: Impacto
+Habilidade: -
 
 Arma 7:
-Martelo Longo (Peso: 3)
-Dano: 1d10 | Crítico: x3
-Alcance: - | Tipo: Esmagamento
-Habilidade: Força
+Machado de Lenha (Peso: 7) + Porrete (Peso: 10)
+Dano: 1d6 | Crítico: x3
+Alcance: - | Tipo: Corte
+Habilidade: Sua lâmina projetada para cortar madeira rígida é capaz de ignorar 5 pontos de RD de objetos e construtos.
 
 Arma 8:
-Cimitarra (Peso: 3)
-Dano: 1d6 | Crítico: 18-20/x2
-Alcance: - | Tipo: Corte
-Habilidade: Força
+Martelo leve (Peso: 6)
+Dano: 1d4 | Crítico: x4
+Alcance: Curto | Tipo: Impacto
+Habilidade: -
 
 Arma 9:
-Rapieira (Peso: 2)
-Dano: 1d6 | Crítico: 18-20/x2
-Alcance: - | Tipo: Perfuração
-Habilidade: Força
+Chakram (Peso: 2)
+Dano: 1d6 | Crítico: x3
+Alcance: Curto | Tipo: Corte
+Habilidade: Sempre que acerta um ataque com o chakram, você pode fazer com que ele retorne à sua mão (pegá-lo é uma reação) ou ricocheteie contra outro alvo; nesse caso, você faz um novo ataque à distância com uma penalidade cumulativa de –5. Você pode continuar atacando novos alvos até recuperar o chakram ou errar um ataque. Por seu desenho e forma de manuseio, o chakram exige treinamento especial, sendo uma arma exótica.
 
 Arma 10:
-Azagaia (Peso: 4) + Escudo Pequeno (Defesa: +1 | Penalidade: -1)
+Lança (Peso: 8) + Adaga (Peso: 10)
 Dano: 1d6 | Crítico: x2
-Alcance: 6m | Tipo: Perfuração
-Habilidade: -
+Alcance: Curto | Tipo: Perfuração
+Habilidade: Ágil
 
 === FIM DOS RESULTADOS ===

@@ -1,0 +1,15 @@
+=== Relatório de Viagem ===
+Terreno: Floresta
+Dias: 10
+Período: dia
+
+Dia 1: Sem encontros
+Dia 2: Sem encontros
+Dia 3: Sem encontros
+Dia 4: Sem encontros
+Dia 5: Sem encontros
+Dia 6: Sem encontros
+Dia 7: Sem encontros
+Dia 8: Sem encontros
+Dia 9: Sem encontros
+Dia 10: Sem encontros

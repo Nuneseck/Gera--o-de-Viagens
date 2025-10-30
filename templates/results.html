@@ -45,6 +45,23 @@
                                     <!-- As características serão inseridas aqui via AJAX -->
                                 </div>
                             </div>
+
+                            <div class="equipamentos-section">
+                                <div class="equipamentos-controls">
+                                    <label for="qtd-armas-{{result.day}}">Armas:</label>
+                                    <input type="number" id="qtd-armas-{{result.day}}" min="0" max="5" value="1" class="equipamentos-input">
+                                    
+                                    <label for="qtd-armaduras-{{result.day}}">Armaduras:</label>
+                                    <input type="number" id="qtd-armaduras-{{result.day}}" min="0" max="5" value="0" class="equipamentos-input">
+                                    
+                                    <button type="button" class="btn-equipamentos" data-day="{{ result.day }}">
+                                        Gerar Equipamentos
+                                    </button>
+                                </div>
+                                
+                                <div id="equipamentos-{{result.day}}" class="equipamentos-container">
+                                    </div>
+                            </div>
                             {% endif %}
                         </div>
                     {% else %}
@@ -102,6 +119,51 @@
             }).always(function() {
                 button.prop('disabled', false).text('Gerar Características');
             });
+        });
+    });
+
+    $('.btn-equipamentos').click(function() {
+        const button = $(this);
+        const day = button.data('day');
+        const qtdArmas = $('#qtd-armas-'+day).val();
+        const qtdArmaduras = $('#qtd-armaduras-'+day).val();
+        const container = $('#equipamentos-'+day);
+
+        button.prop('disabled', true).text('Gerando...');
+        container.html('<p>Carregando equipamentos...</p>');
+
+        $.get('/gerar-equipamentos', { qtd_armas: qtdArmas, qtd_armaduras: qtdArmaduras }, function(data) {
+            if (data.error) {
+                container.html('<p class="erro">Erro: ' + data.error + '</p>');
+                return;
+            }
+
+            let html = '';
+            
+            if (data.armaduras && data.armaduras.length > 0) {
+                html += '<h4>Armaduras Geradas:</h4>';
+                data.armaduras.forEach(function(armadura) {
+                    html += `<pre class="equipamento-item">${armadura}</pre>`;
+                });
+            }
+
+            if (data.armas && data.armas.length > 0) {
+                html += '<h4>Armas Geradas:</h4>';
+                data.armas.forEach(function(arma) {
+                    html += `<pre class="equipamento-item">${arma}</pre>`;
+                });
+            }
+            
+            if (html === '') {
+                html = '<p>Nenhum equipamento foi gerado.</p>';
+            }
+
+            container.html(html);
+
+        }).fail(function() {
+            container.html('<p class="erro">Erro ao gerar equipamentos. Tente novamente.</p>');
+        }).always(function() {
+            button.prop('disabled', false).text('Gerar Equipamentos');
         });
     });
     </script>
